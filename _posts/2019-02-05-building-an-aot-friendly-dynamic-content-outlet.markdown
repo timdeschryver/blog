@@ -2,8 +2,8 @@
 layout: post
 title: 'Building an AOT Friendly Dynamic Content Outlet in Angular'
 date: 2019-02-05 14:40:51 -0500
-categories: angular dynamic javascript
-excerpt: Have you ever needed to dynamically load content or components in your Angular applications? How about in a way that the built-in structural directives — _*ngIf_ and _*ngSwitch — _just don’t provide? Are you also in need of the optimization benefits of using Ahead-of-Time compilation?
+categories: angular
+excerpt: Have you ever needed to dynamically load content or components in your Angular applications? How about in a way that the built-in structural directives , ngIf and ngSwitch  just don’t provide? Are you also in need of the optimization benefits of using Ahead-of-Time compilation?
 ---
 
 ![](https://cdn-images-1.medium.com/max/1600/1*BP6_vVHwGC6Q403DdIn2UQ.png)

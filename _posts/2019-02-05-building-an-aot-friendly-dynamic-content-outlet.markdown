@@ -27,20 +27,21 @@ We’re going to build a special module with a dynamic component outlet that can
 
 Assuming that you have an existing Angular 6+ CLI generated project let’s run through the following steps to scaffold the necessary parts that make up this new Dynamic Content Outlet.
 
-**Generate the Dynamic Content Outlet Module**
+### Generate the Dynamic Content Outlet Module
 
-Generate a new module named **DynamicContentOutletModule** by running the following command in your shell of choice:
+Generate a new module named `DynamicContentOutletModule` by running the following command in your shell of choice:
 
-`$ ng g m dynamic-content-outlet`
+```shell
+$ ng g m dynamic-content-outlet
+```
 
 We will come back later to this module and wire things up.
 
-**Build the Dynamic Content Outlet Registry**
+### Build the Dynamic Content Outlet Registry
 
 Create a new file underneath the newly created folder `src/app/dynamic-content-outlet` named `dynamic-content-outlet.registry.ts`. This will serve as the placeholder for array mapping component name to component type, module path and module name. For now, it will be an empty array as follows.
 
-{% highlight typescript %}
-{% raw %}
+```typescript
 interface RegistryItem {
   componentType: any;
   componentName: string;
@@ -55,32 +56,31 @@ interface RegistryItem {
 */
 
 export const DynamicContentOutletRegistry: RegistryItem[] = [];
-{% endraw %}
-{% endhighlight %}
+```
 
-**Build the Dynamic Content Outlet Error Component**
+### Build the Dynamic Content Outlet Error Component
 
 Create a new file underneath the folder `src/app/dynamic-content-outlet/dynamic-content-outlet-error.component.ts`. This will serve as the component to be rendered anytime an error occurs attempting to load a dynamic component. You can customize the `template` property to use any custom styles or layout that you may have. The `errorMessage` input must stay the same and will be fed with the actual details of the error that occurred while attempting to dynamically render your component.
 
-{% gist https://gist.github.com/wesleygrimes/6951524e04e607ac840ca5490cccbf4e %}
+{% gist 6951524e04e607ac840ca5490cccbf4e %}
 
-**Build the Dynamic Content Outlet Service**
+### Build the Dynamic Content Outlet Service
 
 Create a new file underneath the folder `src/app/dynamic-content-outlet/dynamic-content-outlet.service.ts`. A future article may deep dive into the details of the _why_ and _how_ of this service. For now, however, just know that from a high-level point of view this service encapsulates the logic that loads dynamic components using SystemJS and renders them into the Dynamic Content Outlet. If an error occurs, a `DynamicContentOutletErrorComponent` is rendered instead with the error message included.
 
-{% gist https://gist.github.com/wesleygrimes/fc8bd196d896b47debae0c009b6f5709 %}
+{% gist fc8bd196d896b47debae0c009b6f5709 %}
 
-**Build the Dynamic Content Outlet Component**
+### Build the Dynamic Content Outlet Component
 
 Create a new file underneath the folder `src/app/dynamic-content-outlet/dynamic-content-outlet.component.ts`. A future article may deep dive into the details of the _why_ and _how_ of this component. For now, however, just know that from a high-level point of view this component takes an input property named `componentName` that will call the `DynamicContentOutletService.GetComponent` method passing into it `componentName`. The service then returns an instance of that rendered and compiled component for injection into the view. The service returns an error component instance if the rendering fails for some reason.
 
-{% gist https://gist.github.com/wesleygrimes/4a8aa712242cadb27a6cae11fd187460 %}
+{% gist 4a8aa712242cadb27a6cae11fd187460 %}
 
-**Finish Wiring Up Parts To The Dynamic Content Outlet Module**
+### Finish Wiring Up Parts To The Dynamic Content Outlet Module
 
 Make sure your `src/app/dynamic-content-outlet/dynamic-content-outlet.module.ts` file looks like the following:
 
-{% gist https://gist.github.com/wesleygrimes/59bfed5667bc58bc8c0320acfd71c83f %}
+{% gist 59bfed5667bc58bc8c0320acfd71c83f %}
 
 ***
 
@@ -92,7 +92,7 @@ Phew! Take a deep breath and grab a cup of coffee (french press fair trade organ
 
 ### Register your component(s)
 
-For any component that you would like dynamically rendered you need to do the following three steps.**_These steps must be followed exactly_**_._
+For any component that you would like dynamically rendered you need to do the following three steps. **_These steps must be followed exactly_**_._
 
 1. Confirm that the component is listed in the `entryComponents` array in the module that the component is a part of.
 
@@ -109,22 +109,19 @@ The following properties must be filled out:
 
 - `moduleName`: This is the exact name of the module.
 
-**Example Component Mapping**
-{% highlight typescript %}
-{% raw %}
+#### Example Component Mapping
+```typescript
 {
   componentName: 'MySpecialDynamicContentComponent',
   componentType: MySpecialDynamicContentComponent,
   modulePath: 'src/app/my-special-dynamic-content/my-special-dynamic-content.module',
   moduleName: 'MySpecialDynamicContentModule'
 },
-{% endraw %}
-{% endhighlight %}
+```
 
 3. In your `angular.json` update the `projects > ** > architect > build > options > lazyModules` array and add an item for each module that you added to the registry in order for the Angular AOT compiler to detect and pre-compile your dynamic modules. If you have multiple projects in a folder, make sure you add this for the correct project you are importing and using dynamic modules in. The updated file will look similar to this:
 
-{% highlight json %}
-{% raw %}
+```json
 {
   ...
   "projects": {
@@ -142,8 +139,7 @@ The following properties must be filled out:
     }
   }
 }
-{% endraw %}
-{% endhighlight %}
+```
 
 ### Wire up the Dynamic Content Outlet Module
 
@@ -151,10 +147,9 @@ Up to this point you have created your dynamic content outlet module and registe
 
 1. Add your new `DynamicContentOutletModule` to the `imports` array of any feature module or the main `AppModule` of your Angular application.
 
-**Example of addition to the `imports` array**
+#### Example of addition to the `imports` array
 
-{% highlight typescript %}
-{% raw %}
+```typescript
 @NgModule({
 ...
 imports: [
@@ -164,17 +159,14 @@ imports: [
   ...
 })
 export class AppModule {}
-{% endraw %}
-{% endhighlight %}
+```
 
 2. Add the following tag to the template of the parent component that you would like to render the dynamic content in:
 
-{% highlight html %}
-{% raw %}
+```
 <app-dynamic-content-outlet [componentName]="'MyComponent'">
-</app-dynamic-content-outlet>`
-{% endraw %}
-{% endhighlight %}
+</app-dynamic-content-outlet>
+```
 
 This is very similar in nature to Angular’s built-in `<router-outlet>/</router-outlet>` tag. Please note: the value of the input `componentName` is set during initialization of the parent component either from a Component TypeScript class field or set in the in the actual template. The value can also be retrieved from an external source such as a backend web service, but must be provided at initialization.
 
@@ -184,7 +176,7 @@ This is very similar in nature to Angular’s built-in `<router-outlet>/</router
 
 Hopefully you have found this solution helpful. Here is the full GitHub repository example for you to clone and play around with. PR’s are welcome, appreciated, encouraged and accepted!
 
-**GitHub Repository Example**
+## GitHub Repository Example
 
 [https://github.com/wesleygrimes/angular-dynamic-content](https://github.com/wesleygrimes/angular-dynamic-content)
 
@@ -194,9 +186,7 @@ I would highly recommend enrolling in the Ultimate Angular courses. It is well w
 
 [**Ultimate Courses: Expert online courses in JavaScript, Angular, NGRX and TypeScript**](https://ultimatecourses.com/?ref=76683_ttll_neb)
 
-* * *
-
-**Special Thanks**
+## Special Thanks
 
 I want to take a moment and thank all those I was able to glean this information from. I did not come up with all this on my own, but I was able to get a working solution by combining parts from each of these articles!
 

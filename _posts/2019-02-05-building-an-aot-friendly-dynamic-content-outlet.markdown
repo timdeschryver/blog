@@ -143,6 +143,7 @@ Up to this point you have created your dynamic content outlet module and registe
 **Example of addition to the `imports` array**
 
 {% highlight typescript %}
+{% raw %}
 @NgModule({
 ...
 imports: [
@@ -152,6 +153,7 @@ imports: [
   ...
 })
 export class AppModule {}
+{% endraw %}
 {% endhighlight %}
 
 2. Add the following tag to the template of the parent component that you would like to render the dynamic content in:

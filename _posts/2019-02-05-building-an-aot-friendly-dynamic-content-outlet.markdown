@@ -3,6 +3,7 @@ layout: post
 title: 'Building an AOT Friendly Dynamic Content Outlet in Angular'
 date: 2019-02-05 14:40:51 -0500
 categories: angular dynamic javascript
+excerpt: I'll show you how to build a special module with a dynamic component
 ---
 
 ![](https://cdn-images-1.medium.com/max/1600/1*BP6_vVHwGC6Q403DdIn2UQ.png)

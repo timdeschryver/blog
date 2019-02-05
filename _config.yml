@@ -32,3 +32,5 @@ header_pages:
   - portfolio.md
 
 show_excerpts: true
+
+google_analytics: UA-133910795-1

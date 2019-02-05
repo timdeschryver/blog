@@ -5,7 +5,7 @@ description: >- # this means to ignore newlines until "baseurl:"
   I’m a huge weather nerd. I’m here if you need help in Angular, 
   ASP.Net Core, or best practices.
 baseurl: '' # the subpath of your site, e.g. /blog
-url: https://wesleygrimes.com'' # the base hostname & protocol for your site, e.g. http://example.com
+url: https://wesleygrimes.com # the base hostname & protocol for your site, e.g. http://example.com
 
 twitter:
   username: wesgrimes

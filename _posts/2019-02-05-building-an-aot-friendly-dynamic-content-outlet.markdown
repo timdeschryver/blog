@@ -1,12 +1,15 @@
 ---
 layout: post
-title: 'Building an AOT Friendly Dynamic Content Outlet in Angular'
+title: Building an AOT Friendly Dynamic Content Outlet in Angular
+subtitle: I'll show you how to build a special module with a dynamic component outlet that can be included and used anywhere in your application. This will provide a greater level of flexibility in structuring your Angular applications.
 date: 2019-02-05 14:40:51 -0500
 categories: angular
+tags: [angular,javascript,enterprise,dynamic]
 excerpt: Have you ever needed to dynamically load content or components in your Angular applications? How about in a way that the built-in structural directives , ngIf and ngSwitch  just don’t provide? Are you also in need of the optimization benefits of using Ahead-of-Time compilation?
+header-img: "assets/dynamic_content_outlet_header.png"
 ---
 
-![](https://cdn-images-1.medium.com/max/1600/1*BP6_vVHwGC6Q403DdIn2UQ.png)
+![](/assets/dynamic_content_outlet_header.png)
 
 # Overview — Dynamic Content Outlet
 

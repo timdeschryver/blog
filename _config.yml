@@ -1,0 +1,34 @@
+title: Wesley Grimes
+email: wesgrimes@gmail.com
+description: >- # this means to ignore newlines until "baseurl:"
+  Experienced Lead Software Engineer specializing in enterprise web apps. 
+  I’m a huge weather nerd. I’m here if you need help in Angular, 
+  ASP.Net Core, or best practices.
+baseurl: '' # the subpath of your site, e.g. /blog
+url: https://wesleygrimes.com'' # the base hostname & protocol for your site, e.g. http://example.com
+
+twitter:
+  username: wesgrimes
+  card: summary
+
+markdown: kramdown
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-gist
+
+minima:
+  social_links:
+    twitter: wesgrimes
+    github: wesleygrimes
+    linkedin: wesgrimes
+    medium: wesgrimes
+    dev: wesgrimes
+    rss: rss
+
+header_pages:
+  - about.md
+  - portfolio.md
+
+show_excerpts: true

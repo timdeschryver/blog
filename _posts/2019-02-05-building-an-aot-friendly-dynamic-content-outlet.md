@@ -4,28 +4,28 @@ title: Building an AOT Friendly Dynamic Content Outlet in Angular
 subtitle: I'll show you how to build a special module with a dynamic component outlet that can be included and used anywhere in your application. This will provide a greater level of flexibility in structuring your Angular applications.
 date: 2019-02-05 14:40:51 -0500
 categories: angular
-tags: [angular,javascript,enterprise,dynamic]
+tags: [angular, javascript, enterprise, dynamic]
 excerpt: Have you ever needed to dynamically load content or components in your Angular applications? How about in a way that the built-in structural directives , ngIf and ngSwitch  just don’t provide? Are you also in need of the optimization benefits of using Ahead-of-Time compilation?
-header-img: "assets/dynamic_content_outlet_header.png"
+header-img: 'assets/post_headers/dynamic_content_outlet_header.png'
 ---
 
-![](/assets/dynamic_content_outlet_header.png)
+![](/assets/post_headers/dynamic_content_outlet_header.png)
 
 # Overview — Dynamic Content Outlet
 
-Have you ever needed to dynamically load content or components in your Angular applications? How about in a way that the built-in structural directives — _*ngIf_ and _*ngSwitch — _just don’t provide? Are you also in need of the optimization benefits of using Ahead-of-Time compilation?
+Have you ever needed to dynamically load content or components in your Angular applications? How about in a way that the built-in structural directives — *\*ngIf* and \_\*ngSwitch — _just don’t provide? Are you also in need of the optimization benefits of using Ahead-of-Time compilation?
 
 Well, I have good news for you…(And no you don’t have to be Chuck Norris!) If you stay tuned, I will help you get a solution up and running that will provide a solid way to choose from and load dynamically, at run-time, a set of predefined modules & components in your application.
 
 > This article is assumes you are building an Angular 6+ application generated using the Angular CLI. For information on using the Angular CLI check out the [official documentation](https://angular.io/cli#cli-command-reference).
 
-> This arose out of a business need for the company that I work for. What’s important to note here is that many articles and examples exist on loading content dynamically in Angular, but none that I found worked reliably when compiling Angular with the ` — prod` or ` — aot` flags enabled. The good news is that what I describe in this article works fantastically with Ahead-of-Time compiling.
+> This arose out of a business need for the company that I work for. What’s important to note here is that many articles and examples exist on loading content dynamically in Angular, but none that I found worked reliably when compiling Angular with the `— prod` or `— aot` flags enabled. The good news is that what I describe in this article works fantastically with Ahead-of-Time compiling.
 
 # What We’re Going To Do
 
 We’re going to build a special module with a dynamic component outlet that can be included and used anywhere in your application. The only requirement is that you register, upfront, an array mapping your dynamic components to their parent modules. You will also add these modules to the `lazyModules` property in your `angular.json` file. By doing so, the compiler will pre-compile these modules. The compiler then splits them off into separate minified chunks and makes them available to the SystemJS loader at runtime, with AOT.
 
-* * *
+---
 
 ## Let’s Build Our Dynamic Content Outlet
 
@@ -54,10 +54,10 @@ interface RegistryItem {
 }
 
 /**
-* A registry array of Component Name to details
-* that must be updated with each new component
-* that you wish to load dynamically.
-*/
+ * A registry array of Component Name to details
+ * that must be updated with each new component
+ * that you wish to load dynamically.
+ */
 
 export const DynamicContentOutletRegistry: RegistryItem[] = [];
 ```
@@ -86,7 +86,7 @@ Make sure your `src/app/dynamic-content-outlet/dynamic-content-outlet.module.ts`
 
 {% gist 59bfed5667bc58bc8c0320acfd71c83f %}
 
-***
+---
 
 ## Let’s Use Our New Dynamic Content Outlet
 
@@ -105,6 +105,7 @@ For any component that you would like dynamically rendered you need to do the fo
 For any component that you would like dynamically rendered, add a new entry to the `DynamicContentOutletRegistry` array in `dynamic-content-outlet.registry.ts`.
 
 The following properties must be filled out:
+
 - `componentName`: This should match exactly the name of the Component you wish to load dynamically.
 
 - `componentType`: This should be the literal type of the Component you wish to load dynamically. Not wrapped in quotes.
@@ -114,6 +115,7 @@ The following properties must be filled out:
 - `moduleName`: This is the exact name of the module.
 
 #### Example Component Mapping
+
 ```typescript
 {
   componentName: 'MySpecialDynamicContentComponent',

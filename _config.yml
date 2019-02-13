@@ -17,6 +17,7 @@ plugins:
   - jekyll-feed
   - jekyll-seo-tag
   - jekyll-gist
+  - jekyll-time-to-read
 
 minima:
   social_links:
@@ -28,9 +29,13 @@ minima:
     rss: rss
 
 header_pages:
+  - angular.md
+  - dotnet.md
   - about.md
-  - portfolio.md
 
 show_excerpts: true
 
 google_analytics: UA-133910795-1
+
+disqus:
+  shortname: wesleygrimes

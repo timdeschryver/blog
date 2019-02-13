@@ -1,6 +1,7 @@
 ---
 layout: post
 title: NgRx — Best Practices for Enterprise Angular Applications
+author: Wesley Grimes
 subtitle: A collection of best practices for organizing your NgRx Store
 date: 2018-05-30 10:00:0 -0500
 categories: angular

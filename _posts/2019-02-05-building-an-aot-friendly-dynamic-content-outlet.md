@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Building an AOT Friendly Dynamic Content Outlet in Angular
+author: Wesley Grimes
 subtitle: I'll show you how to build a special module with a dynamic component outlet that can be included and used anywhere in your application. This will provide a greater level of flexibility in structuring your Angular applications.
 date: 2019-02-05 14:40:51 -0500
 categories: angular
@@ -66,25 +67,198 @@ export const DynamicContentOutletRegistry: RegistryItem[] = [];
 
 Create a new file underneath the folder `src/app/dynamic-content-outlet/dynamic-content-outlet-error.component.ts`. This will serve as the component to be rendered anytime an error occurs attempting to load a dynamic component. You can customize the `template` property to use any custom styles or layout that you may have. The `errorMessage` input must stay the same and will be fed with the actual details of the error that occurred while attempting to dynamically render your component.
 
-{% gist 6951524e04e607ac840ca5490cccbf4e %}
+```typescript
+import { Component, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-dynamic-content-outlet-error-component',
+  template: `
+    <div>{{ errorMessage }}</div>
+  `
+})
+export class DynamicContentOutletErrorComponent {
+  @Input() errorMessage: string;
+  constructor() {}
+}
+```
 
 ### Build the Dynamic Content Outlet Service
 
 Create a new file underneath the folder `src/app/dynamic-content-outlet/dynamic-content-outlet.service.ts`. A future article may deep dive into the details of the _why_ and _how_ of this service. For now, however, just know that from a high-level point of view this service encapsulates the logic that loads dynamic components using SystemJS and renders them into the Dynamic Content Outlet. If an error occurs, a `DynamicContentOutletErrorComponent` is rendered instead with the error message included.
 
-{% gist fc8bd196d896b47debae0c009b6f5709 %}
+```typescript
+import {
+  ComponentFactoryResolver,
+  ComponentRef,
+  Injectable,
+  Injector,
+  NgModuleFactoryLoader
+} from '@angular/core';
+import { DynamicContentOutletErrorComponent } from './dynamic-content-outlet-error.component';
+import { DynamicContentOutletRegistry } from './dynamic-content-outlet.registry';
+
+@Injectable()
+export class DynamicContentOutletService {
+  constructor(
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private moduleLoader: NgModuleFactoryLoader,
+    private injector: Injector
+  ) {}
+
+  async GetComponent(componentName: string): Promise<ComponentRef<any>> {
+    const modulePath = this.getModulePathForComponent(componentName);
+
+    if (!modulePath) {
+      return this.getDynamicContentErrorComponent(
+        `Unable to derive modulePath from component: ${componentName} in dynamic-content.routes.ts`
+      );
+    }
+
+    const componentType = this.getComponentTypeForComponent(componentName);
+
+    if (!componentType) {
+      return this.getDynamicContentErrorComponent(
+        `Unable to derive componentType from component: ${componentName} in dynamic-content.registry.ts`
+      );
+    }
+
+    try {
+      const moduleFactory = await this.moduleLoader.load(modulePath);
+      const moduleReference = moduleFactory.create(this.injector);
+      const componentResolver = moduleReference.componentFactoryResolver;
+
+      const componentFactory = componentResolver.resolveComponentFactory(
+        componentType
+      );
+      return componentFactory.create(this.injector);
+    } catch (error) {
+      console.error(error.message);
+      return this.getDynamicContentErrorComponent(
+        `Unable to load module ${modulePath}.
+                Looked up using component: ${componentName}. Error Details: ${
+          error.message
+        }`
+      );
+    }
+  }
+
+  private getModulePathForComponent(componentName: string) {
+    const registryItem = DynamicContentOutletRegistry.find(
+      i => i.componentName === componentName
+    );
+
+    if (registryItem && registryItem.modulePath) {
+      // imported modules must be in the format 'path#moduleName'
+      return `${registryItem.modulePath}#${registryItem.moduleName}`;
+    }
+
+    return null;
+  }
+
+  private getComponentTypeForComponent(componentName: string) {
+    const registryItem = DynamicContentOutletRegistry.find(
+      i => i.componentName === componentName
+    );
+
+    if (registryItem && registryItem.componentType) {
+      return registryItem.componentType;
+    }
+
+    return null;
+  }
+
+  private getDynamicContentErrorComponent(errorMessage: string) {
+    const factory = this.componentFactoryResolver.resolveComponentFactory(
+      DynamicContentOutletErrorComponent
+    );
+    const componentRef = factory.create(this.injector);
+    const instance = <any>componentRef.instance;
+    instance.errorMessage = errorMessage;
+    return componentRef;
+  }
+}
+```
 
 ### Build the Dynamic Content Outlet Component
 
 Create a new file underneath the folder `src/app/dynamic-content-outlet/dynamic-content-outlet.component.ts`. A future article may deep dive into the details of the _why_ and _how_ of this component. For now, however, just know that from a high-level point of view this component takes an input property named `componentName` that will call the `DynamicContentOutletService.GetComponent` method passing into it `componentName`. The service then returns an instance of that rendered and compiled component for injection into the view. The service returns an error component instance if the rendering fails for some reason.
 
-{% gist 4a8aa712242cadb27a6cae11fd187460 %}
+```typescript
+import {
+  AfterViewInit,
+  Component,
+  ComponentRef,
+  Input,
+  OnDestroy,
+  ViewChild,
+  ViewContainerRef
+} from '@angular/core';
+import { DynamicContentOutletService } from './dynamic-content-outlet.service';
+
+@Component({
+  selector: 'app-dynamic-content-outlet',
+  template: `
+    <ng-container #container></ng-container>
+  `
+})
+export class DynamicContentOutletComponent implements AfterViewInit, OnDestroy {
+  @ViewChild('container', { read: ViewContainerRef })
+  container: ViewContainerRef;
+
+  @Input() componentName: string;
+
+  private component: ComponentRef<{}>;
+
+  constructor(private dynamicContentService: DynamicContentOutletService) {}
+
+  async ngAfterViewInit() {
+    this.component = await this.dynamicContentService.GetComponent(
+      this.componentName
+    );
+    this.container.insert(this.component.hostView);
+  }
+
+  ngOnDestroy() {
+    if (this.component) {
+      this.component.destroy();
+      this.component = null;
+    }
+  }
+}
+```
 
 ### Finish Wiring Up Parts To The Dynamic Content Outlet Module
 
 Make sure your `src/app/dynamic-content-outlet/dynamic-content-outlet.module.ts` file looks like the following:
 
-{% gist 59bfed5667bc58bc8c0320acfd71c83f %}
+```typescript
+import { CommonModule } from '@angular/common';
+import {
+  NgModule,
+  NgModuleFactoryLoader,
+  SystemJsNgModuleLoader
+} from '@angular/core';
+import { DynamicContentOutletErrorComponent } from './dynamic-content-outlet-error.component';
+import { DynamicContentOutletComponent } from './dynamic-content-outlet.component';
+import { DynamicContentOutletService } from './dynamic-content-outlet.service';
+
+@NgModule({
+  imports: [CommonModule],
+  declarations: [
+    DynamicContentOutletComponent,
+    DynamicContentOutletErrorComponent
+  ],
+  exports: [DynamicContentOutletComponent],
+  providers: [
+    {
+      provide: NgModuleFactoryLoader,
+      useClass: SystemJsNgModuleLoader
+    },
+    DynamicContentOutletService
+  ]
+})
+export class DynamicContentOutletModule {}
+```
 
 ---
 
@@ -190,12 +364,12 @@ Hopefully you have found this solution helpful. Here is the full GitHub reposito
 
 I would highly recommend enrolling in the Ultimate Angular courses. It is well worth the money and I have used it as a training tool for new Angular developers. Follow the link below to signup.
 
-[**Ultimate Courses: Expert online courses in JavaScript, Angular, NGRX and TypeScript**](https://ultimatecourses.com/?ref=76683_ttll_neb)
+[Ultimate Courses: Expert online courses in JavaScript, Angular, NGRX and TypeScript](https://ultimatecourses.com/?ref=76683_ttll_neb)
 
 ## Special Thanks
 
 I want to take a moment and thank all those I was able to glean this information from. I did not come up with all this on my own, but I was able to get a working solution by combining parts from each of these articles!
 
-[**Dynamically Loading Components with Angular CLI**](https://blog.angularindepth.com/dynamically-loading-components-with-angular-cli-92a3c69bcd28)
+[Dynamically Loading Components with Angular CLI](https://blog.angularindepth.com/dynamically-loading-components-with-angular-cli-92a3c69bcd28)
 
-[**Here is what you need to know about dynamic components in Angular**](https://blog.angularindepth.com/here-is-what-you-need-to-know-about-dynamic-components-in-angular-ac1e96167f9e)
+[Here is what you need to know about dynamic components in Angular](https://blog.angularindepth.com/here-is-what-you-need-to-know-about-dynamic-components-in-angular-ac1e96167f9e)

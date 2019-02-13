@@ -18,6 +18,7 @@ plugins:
   - jekyll-seo-tag
   - jekyll-gist
   - jekyll-time-to-read
+  - jekyll-sitemap
 
 minima:
   social_links:

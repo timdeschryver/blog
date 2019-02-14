@@ -1,12 +1,12 @@
 ---
 layout: post
-title: Remove All Unused TypeScript Imports
+title: Auto-Remove All Unused Imports in a TypeScript Project
 author: Wesley Grimes
 subtitle: A way to automatically remove all unused TypeScript imports across all files in a project
 date: 2019-02-14 14:34:51 -0500
 categories: angular
 tags: [javascript, enterprise, typescript, tslint]
-excerpt: We will use the `tslint` command line tool, in conjuction with a the `tslint-etc` rules, to automatically detect and remove all unused imports in the directory, recursively. If you have a large project, the process can take some time to run. It is important to double-check all files for correctness once the fix process is complete.
+excerpt: We will use the `tslint` command line tool, in conjuction with the `tslint-etc` rules, to automatically detect and remove all unused imports in the directory, recursively. If you have a large project, the process can take some time to run. It is important to double-check all files for correctness once the fix process is complete.
 header-img: 'assets/post_headers/autoremove_unused_typescript_imports.jpg'
 ---
 ![](/assets/post_headers/autoremove_unused_typescript_imports.jpg)
@@ -16,7 +16,7 @@ Recently, I had a need arise to programatically and recursively traverse through
 
 # The Solution
 
-We will use the `tslint` command line tool, in conjuction with a the `tslint-etc` rules, to automatically detect and remove all unused imports in the directory, recursively. If you have a large project, the process can take some time to run. It is important to double-check all files for correctness once the fix process is complete.
+We will use the `tslint` command line tool, in conjuction with the `tslint-etc` rules, to automatically detect and remove all unused imports in the directory, recursively. If you have a large project, the process can take some time to run. It is important to double-check all files for correctness once the fix process is complete.
 
 ## Install Required Tools
 

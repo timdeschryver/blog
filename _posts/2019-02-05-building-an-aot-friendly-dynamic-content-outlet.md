@@ -14,7 +14,7 @@ header-img: 'assets/post_headers/dynamic_content_outlet_header.png'
 
 # Overview — Dynamic Content Outlet
 
-Have you ever needed to dynamically load content or components in your Angular applications? How about in a way that the built-in structural directives — *\*ngIf* and \_\*ngSwitch — _just don’t provide? Are you also in need of the optimization benefits of using Ahead-of-Time compilation?
+Have you ever needed to dynamically load content or components in your Angular applications? How about in a way that the built-in structural directives  (`*ngIf*`, `*ngSwitch`) just don’t provide? Are you also in need of the optimization benefits of using Ahead-of-Time compilation?
 
 Well, I have good news for you…(And no you don’t have to be Chuck Norris!) If you stay tuned, I will help you get a solution up and running that will provide a solid way to choose from and load dynamically, at run-time, a set of predefined modules & components in your application.
 
@@ -350,7 +350,7 @@ export class AppModule {}
 
 This is very similar in nature to Angular’s built-in `<router-outlet>/</router-outlet>` tag. Please note: the value of the input `componentName` is set during initialization of the parent component either from a Component TypeScript class field or set in the in the actual template. The value can also be retrieved from an external source such as a backend web service, but must be provided at initialization.
 
-3. Happy `ng serve --prod`ing!
+3. Happy `ng serve --prod` ing!
 
 ## Conclusion
 

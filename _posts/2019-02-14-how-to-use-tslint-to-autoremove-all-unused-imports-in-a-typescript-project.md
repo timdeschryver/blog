@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Auto-Remove All Unused Imports in a TypeScript Project
+title: Automatically Remove All Unused Imports in a TypeScript Project
 author: Wesley Grimes
 subtitle: A way to automatically remove all unused TypeScript imports across all files in a project
 date: 2019-02-14 14:34:51 -0500

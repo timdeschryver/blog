@@ -3,3 +3,12 @@
 ---
 
 @import "minima";
+
+pre[class*="language-"] {
+    border-radius: 10px;
+}
+
+code {
+    background-color: #F5F5F5;
+    color:inherit;
+}

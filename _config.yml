@@ -40,3 +40,9 @@ google_analytics: UA-133910795-1
 
 disqus:
   shortname: wesleygrimes
+
+highlighter: none
+
+kramdown:
+   syntax_highlighter_opts:
+      disable : true

@@ -9,7 +9,9 @@ tags: [javascript, enterprise, typescript, tslint]
 excerpt: We will use the `tslint` command line tool, in conjuction with the `tslint-etc` rules, to automatically detect and remove all unused imports in the directory, recursively. If you have a large project, the process can take some time to run. It is important to double-check all files for correctness once the fix process is complete.
 header-img: 'assets/post_headers/autoremove_unused_typescript_imports.jpg'
 ---
+
 ![](/assets/post_headers/autoremove_unused_typescript_imports.jpg)
+
 # The Problem
 
 Recently, I had a need arise to programatically and recursively traverse through all `*.ts` files in a given project and remove all unused TypeScript imports. At the time this article was written, there was no way to do this within Visual Studio Code without opening each individual `*.ts` file and hitting `CTRL + Shift + O` on Windows/Linux. After some research, and much appreciated help from Twitter colleagues, I found a solution that works. This should work for Angular, React, Vue.js, or any plain TypeScript project.

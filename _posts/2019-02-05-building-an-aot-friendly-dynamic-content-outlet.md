@@ -343,7 +343,7 @@ export class AppModule {}
 
 2. Add the following tag to the template of the parent component that you would like to render the dynamic content in:
 
-```
+```html
 <app-dynamic-content-outlet [componentName]="'MyComponent'">
 </app-dynamic-content-outlet>
 ```

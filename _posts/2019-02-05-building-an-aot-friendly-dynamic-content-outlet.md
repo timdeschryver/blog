@@ -84,7 +84,7 @@ export class DynamicContentOutletErrorComponent {
 
 ### Build the Dynamic Content Outlet Service
 
-Create a new file underneath the folder `src/app/dynamic-content-outlet/dynamic-content-outlet.service.ts`. A future article may deep dive into the details of the _why_ and _how_ of this service. For now, however, just know that from a high-level point of view this service encapsulates the logic that loads dynamic components using SystemJS and renders them into the Dynamic Content Outlet. If an error occurs, a `DynamicContentOutletErrorComponent` is rendered instead with the error message included.
+Create a new file underneath the folder `src/app/dynamic-content-outlet/dynamic-content-outlet.service.ts`. This service encapsulates the logic that loads dynamic components using SystemJS and renders them into the Dynamic Content Outlet. If an error occurs, a `DynamicContentOutletErrorComponent` is rendered instead with the error message included.
 
 ```typescript
 import {
@@ -110,7 +110,7 @@ export class DynamicContentOutletService {
 
     if (!modulePath) {
       return this.getDynamicContentErrorComponent(
-        `Unable to derive modulePath from component: ${componentName} in dynamic-content.routes.ts`
+        `Unable to derive modulePath from component: ${componentName} in dynamic-content.registry.ts`
       );
     }
 
@@ -181,14 +181,14 @@ export class DynamicContentOutletService {
 
 ### Build the Dynamic Content Outlet Component
 
-Create a new file underneath the folder `src/app/dynamic-content-outlet/dynamic-content-outlet.component.ts`. A future article may deep dive into the details of the _why_ and _how_ of this component. For now, however, just know that from a high-level point of view this component takes an input property named `componentName` that will call the `DynamicContentOutletService.GetComponent` method passing into it `componentName`. The service then returns an instance of that rendered and compiled component for injection into the view. The service returns an error component instance if the rendering fails for some reason.
+Create a new file underneath the folder `src/app/dynamic-content-outlet/dynamic-content-outlet.component.ts`. This component takes an input property named `componentName` that will call the `DynamicContentOutletService.GetComponent` method passing into it `componentName`. The service then returns an instance of that rendered and compiled component for injection into the view. The service returns an error component instance if the rendering fails for some reason. The component listens for changes via the `ngOnChanges` life-cycle method. If the `@Input() componentName: string;` is set or changes it automatically re-renders the component as necessary. It also properly handles destroying the component with the `ngOnDestroy` life-cycle method.
 
 ```typescript
 import {
-  AfterViewInit,
   Component,
   ComponentRef,
   Input,
+  OnChanges,
   OnDestroy,
   ViewChild,
   ViewContainerRef
@@ -201,7 +201,7 @@ import { DynamicContentOutletService } from './dynamic-content-outlet.service';
     <ng-container #container></ng-container>
   `
 })
-export class DynamicContentOutletComponent implements AfterViewInit, OnDestroy {
+export class DynamicContentOutletComponent implements OnDestroy, OnChanges {
   @ViewChild('container', { read: ViewContainerRef })
   container: ViewContainerRef;
 
@@ -211,14 +211,24 @@ export class DynamicContentOutletComponent implements AfterViewInit, OnDestroy {
 
   constructor(private dynamicContentService: DynamicContentOutletService) {}
 
-  async ngAfterViewInit() {
+  async ngOnChanges() {
+    await this.renderComponent();
+  }
+
+  ngOnDestroy() {
+    this.destroyComponent();
+  }
+
+  private async renderComponent() {
+    this.destroyComponent();
+
     this.component = await this.dynamicContentService.GetComponent(
       this.componentName
     );
     this.container.insert(this.component.hostView);
   }
 
-  ngOnDestroy() {
+  private destroyComponent() {
     if (this.component) {
       this.component.destroy();
       this.component = null;
@@ -352,13 +362,19 @@ This is very similar in nature to Angular’s built-in `<router-outlet>/</router
 
 3. Happy `ng serve --prod` ing!
 
+## Real-World Complex Example
+
+If you are interested in a more in-depth real-world example, then check out the Github Repository which will demonstrate the following:
+
+* Dynamic modules with multiple components
+* Demonstrating the use of on-the-fly component changes
+* Demonstrating that the scoped styles are loaded dynamically for each component
+
+> GitHub Repository Example [https://github.com/wesleygrimes/angular-dynamic-content](https://github.com/wesleygrimes/angular-dynamic-content)
+
 ## Conclusion
 
 Hopefully you have found this solution helpful. Here is the full GitHub repository example for you to clone and play around with. PR’s are welcome, appreciated, encouraged and accepted!
-
-## GitHub Repository Example
-
-[https://github.com/wesleygrimes/angular-dynamic-content](https://github.com/wesleygrimes/angular-dynamic-content)
 
 ## Additional Resources
 

@@ -32,7 +32,7 @@ Courses](https://bit.ly/2WubqhW), the offerings created and curated by [Todd
 Motto](https://toddmotto.com/) (Google Developer Expert and Angular
 extraordinaire).
 
-*****
+***
 
 # Let’s Review The Packages
 
@@ -75,7 +75,7 @@ If you are working with a team of developers, Ultimate Courses offers user
 licensing with discounts as the user count grows. This is a great option for
 teams of developers learning Angular.
 
-*****
+***
 
 # Angular Fundamentals
 
@@ -98,7 +98,7 @@ introductory course, this offering does a fantastic job of giving you just
 enough information to be dangerous (in a good way), while not overwhelming
 first-time Angular developers.
 
-*****
+***
 
 # Angular Pro
 
@@ -120,7 +120,7 @@ tooling.
 * Dependency Injection and Zones
 * Statement Management with Rx — although I recommend [NgRx](http://ngrx.io/)
 
-*****
+***
 
 # TypeScript Basics
 
@@ -138,7 +138,7 @@ if you are building with TypeScript. Topics include:
 * Diving into Interfaces
 * Classes, Properties and Inheritance
 
-*****
+***
 
 # TypeScript Masterclass
 
@@ -157,7 +157,7 @@ then this course is probably for you. Topics include:
 * Declaration Files
 * tsconfig and Compiler Options
 
-*****
+***
 
 # NGRX Store + Effects
 
@@ -212,7 +212,7 @@ Below is a detailed list of the topics covered in this course:
 * Observables and Change Detection
 * Unit Testing
 
-*****
+***
 
 # Conclusion
 
@@ -223,7 +223,9 @@ approach of explaining complex concepts, makes these courses both fun and
 educational. As an added bonus, Todd does the voice-overs himself so you get to
 learn Angular with a British accent. Win-Win-Win.
 
-# More Information on Ultimate Courses
+![](/assets/post_headers/ultimate_courses_2.jpg)
+
+## More Information on Ultimate Courses
 
 Ultimate Courses: Expert online courses in JavaScript, Angular, NGRX and TypeScript
 Expert online courses in JavaScript, Angular, NGRX and TypeScript. Join 50,000 others mastering new technologies with [Ultimate Courses](https://bit.ly/2WubqhW)

@@ -615,6 +615,7 @@ export class MyFeatureComponent implements OnInit {
   }
 }
 ```
+---
 
 ## Finished Application Structure
 
@@ -674,6 +675,8 @@ Once we have completed implementation of the above best practices our Angular ap
  ├── tsconfig.spec.json
  └── tslint.json
 ```
+
+---
 
 ## Fully Working Example — Chuck Norris Joke Generator
 

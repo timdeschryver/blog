@@ -3,7 +3,7 @@ layout: post
 title: Angular courses for you and your team, a review of Ultimate Courses
 author: Wesley Grimes
 subtitle: In-depth review of Ultimate Courses
-date: 2019-02-22 14:34:51 -0500
+date: 2019-02-22 05:34:51 -0500
 categories: angular
 tags: [javascript, enterprise, typescript, tslint, training]
 excerpt: While these are fantastic resources, it’s often hard to find Angular training courses that teach on the latest and greatest versions of front-end libraries and frameworks. In this article, I will explore, Ultimate Courses, the offerings created and curated by Todd Motto (Google Developer Expert and Angular extraordinaire).

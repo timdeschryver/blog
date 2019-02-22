@@ -8,6 +8,7 @@ categories: angular
 tags: [javascript, enterprise, typescript, tslint, training]
 excerpt: While these are fantastic resources, it's often hard to find Angular training courses that teach on the latest and greatest versions of front-end libraries and frameworks. In this article, I will explore, Ultimate Courses, the offerings created and curated by Todd Motto (Google Developer Expert and Angular extraordinaire).
 header-img: 'assets/post_headers/ultimate_courses.jpg'
+hide_banner: true
 ---
 
 ![](/assets/post_headers/ultimate_courses.jpg)

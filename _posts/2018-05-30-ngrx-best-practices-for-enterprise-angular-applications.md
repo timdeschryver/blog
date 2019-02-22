@@ -692,6 +692,8 @@ You can see the live demo at [https://angular-ngrx-chuck-norris.stackblitz.io](h
 
 [angular-ngrx-chuck-norris - StackBlitz](https://stackblitz.com/edit/angular-ngrx-chuck-norris)
 
+---
+
 ## Conclusion
 
 It's important to remember that I have implemented these best practices in several "real world" applications. While I have found these best practices helpful, and maintainable, I do not believe they are an end-all be-all solution to organizing NgRx projects; it's just what has worked for me. I am curious as to what you all think? Please feel free to offer any suggestions, tips, or best practices you've learned when building enterprise Angular applications with NgRx and I will update the article to reflect as such. Happy Coding!

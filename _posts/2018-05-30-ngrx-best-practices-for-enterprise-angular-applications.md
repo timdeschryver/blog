@@ -12,7 +12,7 @@ header-img: "assets/post_headers/ngrx_best_practices_header.png"
 
 ![](/assets/post_headers/ngrx_best_practices_header.png)
 
-# Before We Get Started
+## Before We Get Started
 
 This article is not intended to be a tutorial on **NgRx**. There are several great resources that currently exist, written by experts much smarter than me. I highly suggest that you take time and learn **NgRx** and the **redux** pattern before attempting to implement these concepts.
 
@@ -22,17 +22,17 @@ This article is not intended to be a tutorial on **NgRx**. There are several gre
 - [NgRx.io Docs](https://ngrx.io/docs)
 - [NgRx.io Resources](https://ngrx.io/resources)
 
-# Background
+## Background
 
 The following represents a pattern that I've developed at my day job after building several enterprise Angular applications using the **NgRx** library. I have found that most online tutorials do a great job of helping you to get your store up and running, but often fall short of illustrating best practices for clean separation of concerns between your store feature slices, root store, and user interface.
 
 With the following pattern, your root application state, and each slice (property) of that root application state are separated into a `RootStoreModule` and per feature `MyFeatureStoreModule`.
 
-# Prerequisites
+## Prerequisites
 
 This article assumes that you are building an [Angular v6 CLI](https://cli.angular.io/) generated application.
 
-# Installing NgRx Dependencies
+## Installing NgRx Dependencies
 
 Before we get started with generating code, let's make sure to install the necessary **NgRx** node modules from a prompt:
 
@@ -40,11 +40,11 @@ Before we get started with generating code, let's make sure to install the neces
 $ npm install @ngrx/{store,store-devtools,entity,effects}
 ```
 
-# Best Practice #1 — The Root Store Module
+## Best Practice ##1 — The Root Store Module
 
 Create a Root Store Module as a proper Angular **NgModule's** that bundle together NgRx store logic. Feature store modules will be imported into the Root Store Module allowing for a single root store module to be imported into your application's main App Module.
 
-## Suggested Implementation
+#### Suggested Implementation
 
 1.  Generate `RootStoreModule` using the **Angular CLI:**
 
@@ -62,19 +62,19 @@ This will create an interface named `RootState` but you will need to rename it t
 
 PLEASE NOTE: You will come back later on and add to this interface each feature module as a property.
 
-# Best Practice #2 — Create Feature Store Module(s)
+## Best Practice ##2 — Create Feature Store Module(s)
 
 Create feature store modules as proper Angular NgModule's that bundle together feature slices of your store, including `state`, `actions`, `reducer`, `selectors`, and `effects`. Feature modules are then imported into your `RootStoreModule`. This will keep your code cleanly organizing into sub-directories for each feature store. In addition, as illustrated later on in the article, public `actions`, `selectors`, and `state` are name-spaced and exported with feature store prefixes.
 
-## Naming Your Feature Store
+#### Naming Your Feature Store
 
 In the example implementation below we will use the feature name `MyFeature`, however, this will be different for each feature you generate and should closely mirror the `RootState` property name. For example, if you are building a blog application, a feature name might be `Post`.
 
-## Entity Feature Modules or Standard Feature Modules?
+#### Entity Feature Modules or Standard Feature Modules?
 
 Depending on the type of feature you are creating you may or may not benefit from implementing [NgRx Entity](https://medium.com/ngrx/introducing-ngrx-entity-598176456e15). If your store feature slice will be dealing with an array of type then I suggest following the _Entity Feature Module_ implementation below. If building a store feature slice that does not consist of a standard array of type, then I suggest following the _Standard Feature Module_ implementation below.
 
-## Suggested Implementation — Entity Feature Module
+#### Suggested Implementation — Entity Feature Module
 
 1.  Generate `MyFeatureStoreModule` feature module using the **Angular CLI:**
 
@@ -265,7 +265,7 @@ export class MyFeatureStoreEffects {
 }
 ```
 
-## Suggested Implementation — Standard Feature Module
+#### Suggested Implementation — Standard Feature Module
 
 1.  Generate `MyFeatureStoreModule` feature module using the **Angular CLI:**
 
@@ -446,7 +446,7 @@ export class MyFeatureStoreEffects {
 }
 ```
 
-## Suggested Implementation — Entity and Standard Feature Modules
+#### Suggested Implementation — Entity and Standard Feature Modules
 
 Now that we have created our feature module, either Entity or Standard typed above, we need to import the parts (state, actions, reducer, effects, selectors) into the Angular NgModule for the feature. In addition, we will create a barrel export in order to make imports in our application components clean and orderly, with asserted name-spaces.
 
@@ -483,11 +483,11 @@ export { MyFeatureStoreModule } from './my-feature-store.module';
 export { MyFeatureStoreActions, MyFeatureStoreSelectors, MyFeatureStoreState };
 ```
 
-# Best Practice #1 — The Root Store Module (cont.)
+## Best Practice ##1 — The Root Store Module (cont.)
 
-Now that we have built our feature modules, let's pick up where we left off in best practice #1 and finish building out our `RootStoreModule` and `RootState.`
+Now that we have built our feature modules, let's pick up where we left off in best practice ##1 and finish building out our `RootStoreModule` and `RootState.`
 
-## Suggested Implementation (cont.)
+#### Suggested Implementation (cont.)
 
 3. Update `app/root-store/root-state.ts` and add a property for each feature that we have created previously:
 
@@ -563,7 +563,7 @@ export * from './my-other-feature-store';
 export { RootStoreState, RootStoreSelectors, RootStoreModule };
 ```
 
-# Wiring up the Root Store Module to your Application
+## Wiring up the Root Store Module to your Application
 
 Now that we have built our Root Store Module, composed of Feature Store Modules, let's add it to the main `app.module.ts` and show just how neat and clean the wiring up process is.
 
@@ -616,7 +616,7 @@ export class MyFeatureComponent implements OnInit {
 }
 ```
 
-# Finished Application Structure
+## Finished Application Structure
 
 Once we have completed implementation of the above best practices our Angular application structure should look very similar to something like this:
 
@@ -675,27 +675,27 @@ Once we have completed implementation of the above best practices our Angular ap
  └── tslint.json
 ```
 
-# Fully Working Example — Chuck Norris Joke Generator
+## Fully Working Example — Chuck Norris Joke Generator
 
 I have put together a fully working example of the above best practices. It's a simple Chuck Norris Joke Generator that has uses `@angular/material` and the [http://www.icndb.com/](http://www.icndb.com/) api for data.
 
-## Github
+#### Github
 
 [https://github.com/wesleygrimes/angular-ngrx-chuck-norris](https://github.com/wesleygrimes/angular-ngrx-chuck-norris)
 
-## Stackblitz
+#### Stackblitz
 
 You can see the live demo at [https://angular-ngrx-chuck-norris.stackblitz.io](https://angular-ngrx-chuck-norris.stackblitz.io) and here is the [Stackblitz](https://stackblitz.com) editor:
 
 [angular-ngrx-chuck-norris - StackBlitz](https://stackblitz.com/edit/angular-ngrx-chuck-norris)
 
-# Conclusion
+## Conclusion
 
 It's important to remember that I have implemented these best practices in several "real world" applications. While I have found these best practices helpful, and maintainable, I do not believe they are an end-all be-all solution to organizing NgRx projects; it's just what has worked for me. I am curious as to what you all think? Please feel free to offer any suggestions, tips, or best practices you've learned when building enterprise Angular applications with NgRx and I will update the article to reflect as such. Happy Coding!
 
 ---
 
-# Additional Resources
+## Additional Resources
 
 I would highly recommend enrolling in the Ultimate Angular courses, especially the NgRx course. It is well worth the money and I have used it as a training tool for new Angular developers. Follow the link below to signup.
 

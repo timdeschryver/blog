@@ -30,7 +30,7 @@ With the following pattern, your root application state, and each slice (propert
 
 ## Prerequisites
 
-This article assumes that you are building an [Angular v6 CLI](https://cli.angular.io/) generated application.
+This article assumes that you are building an [Angular v7 CLI](https://cli.angular.io/) generated application.
 
 ## Installing NgRx Dependencies
 
@@ -40,11 +40,11 @@ Before we get started with generating code, let's make sure to install the neces
 $ npm install @ngrx/{store,store-devtools,entity,effects}
 ```
 
-## Best Practice ##1 — The Root Store Module
+## Best Practice #1 — The Root Store Module
 
 Create a Root Store Module as a proper Angular **NgModule's** that bundle together NgRx store logic. Feature store modules will be imported into the Root Store Module allowing for a single root store module to be imported into your application's main App Module.
 
-#### Suggested Implementation
+### Suggested Implementation
 
 1.  Generate `RootStoreModule` using the **Angular CLI:**
 
@@ -62,19 +62,19 @@ This will create an interface named `RootState` but you will need to rename it t
 
 PLEASE NOTE: You will come back later on and add to this interface each feature module as a property.
 
-## Best Practice ##2 — Create Feature Store Module(s)
+## Best Practice #2 — Create Feature Store Module(s)
 
 Create feature store modules as proper Angular NgModule's that bundle together feature slices of your store, including `state`, `actions`, `reducer`, `selectors`, and `effects`. Feature modules are then imported into your `RootStoreModule`. This will keep your code cleanly organizing into sub-directories for each feature store. In addition, as illustrated later on in the article, public `actions`, `selectors`, and `state` are name-spaced and exported with feature store prefixes.
 
-#### Naming Your Feature Store
+### Naming Your Feature Store
 
 In the example implementation below we will use the feature name `MyFeature`, however, this will be different for each feature you generate and should closely mirror the `RootState` property name. For example, if you are building a blog application, a feature name might be `Post`.
 
-#### Entity Feature Modules or Standard Feature Modules?
+### Entity Feature Modules or Standard Feature Modules?
 
 Depending on the type of feature you are creating you may or may not benefit from implementing [NgRx Entity](https://medium.com/ngrx/introducing-ngrx-entity-598176456e15). If your store feature slice will be dealing with an array of type then I suggest following the _Entity Feature Module_ implementation below. If building a store feature slice that does not consist of a standard array of type, then I suggest following the _Standard Feature Module_ implementation below.
 
-#### Suggested Implementation — Entity Feature Module
+### Suggested Implementation — Entity Feature Module
 
 1.  Generate `MyFeatureStoreModule` feature module using the **Angular CLI:**
 
@@ -483,11 +483,11 @@ export { MyFeatureStoreModule } from './my-feature-store.module';
 export { MyFeatureStoreActions, MyFeatureStoreSelectors, MyFeatureStoreState };
 ```
 
-## Best Practice ##1 — The Root Store Module (cont.)
+## Best Practice #1 — The Root Store Module (cont.)
 
 Now that we have built our feature modules, let's pick up where we left off in best practice ##1 and finish building out our `RootStoreModule` and `RootState.`
 
-#### Suggested Implementation (cont.)
+### Suggested Implementation (cont.)
 
 3. Update `app/root-store/root-state.ts` and add a property for each feature that we have created previously:
 
@@ -679,11 +679,11 @@ Once we have completed implementation of the above best practices our Angular ap
 
 I have put together a fully working example of the above best practices. It's a simple Chuck Norris Joke Generator that has uses `@angular/material` and the [http://www.icndb.com/](http://www.icndb.com/) api for data.
 
-#### Github
+### Github
 
 [https://github.com/wesleygrimes/angular-ngrx-chuck-norris](https://github.com/wesleygrimes/angular-ngrx-chuck-norris)
 
-#### Stackblitz
+### Stackblitz
 
 You can see the live demo at [https://angular-ngrx-chuck-norris.stackblitz.io](https://angular-ngrx-chuck-norris.stackblitz.io) and here is the [Stackblitz](https://stackblitz.com) editor:
 
@@ -699,4 +699,4 @@ It's important to remember that I have implemented these best practices in sever
 
 I would highly recommend enrolling in the Ultimate Angular courses, especially the NgRx course. It is well worth the money and I have used it as a training tool for new Angular developers. Follow the link below to signup.
 
-[Ultimate Courses: Expert online courses in JavaScript, Angular, NGRX and TypeScript](https://ultimatecourses.com/?ref=76683_ttll_neb)
+[Ultimate Courses: Expert online courses in JavaScript, Angular, NGRX and TypeScript](https://bit.ly/2WubqhW)

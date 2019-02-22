@@ -18,18 +18,20 @@ One-on-one training and instructor-led training sessions are great, but not ever
 
 While these are fantastic resources, it's often hard to find Angular training courses that teach on the latest and greatest versions of front-end libraries and frameworks. In this article, I will explore, [Ultimate Courses](https://bit.ly/2WubqhW), the offerings created and curated by [Todd Motto](https://toddmotto.com/) (Google Developer Expert and Angular extraordinaire).
 
+---
+
 ## Let's Review The Packages
 
 For Angular development, [Ultimate Courses](https://bit.ly/2WubqhW) offers two packages to choose from: [Angular Kickstart Package](https://bit.ly/2WubqhW) and [Angular Ultimate Package](https://bit.ly/2WubqhW). Let's quickly review the differences.
 
-## [Angular Kickstart Package](https://bit.ly/2WubqhW)
+### [Angular Kickstart Package](https://bit.ly/2WubqhW)
 
 If your team has previous TypeScript experience, then this is the package I would recommend. It includes: 
 
 * *Angular Fundamentals*
 * *Angular Pro*
 
-## [Angular Ultimate Package](https://bit.ly/2WubqhW)
+### [Angular Ultimate Package](https://bit.ly/2WubqhW)
 
 Learning Angular, for most developers, is not just as simple as learning the frameworks features, conventions and tooling. For most, it requires getting up to speed on [TypeScript](http://www.typescriptlang.org/), a powerful, typed superset of JavaScript. Teaching developers TypeScript is a must for any online solution that I recommend, and thankfully Ultimate Courses' [Angular Ultimate Package](https://bit.ly/2WubqhW) has you covered here. It includes: 
 
@@ -47,6 +49,8 @@ Courses can be purchased in packages as stated above, however, they can also be 
 
 If you are working with a team of developers, Ultimate Courses offers user licensing  with discounts as the user count grows. This is a great option for teams of developers learning Angular.
 
+---
+
 ## Angular Fundamentals
 
 This course starts out from the high-level and slowly dives deeper into the basic building blocks of an Angular single page application. The content is separated into the following sections:
@@ -63,6 +67,8 @@ This course starts out from the high-level and slowly dives deeper into the basi
 
 I won't dive too deep into each these sections, but I will say for an introductory course, this offering does a fantastic job of giving you just enough information to be dangerous (in a good way), while not overwhelming first-time Angular developers.
 
+---
+
 ## Angular Pro
 
 This course takes the concepts learned in Angular Fundamentals and goes deep, way deep. The topics covered in this course are vital to learn as any Angular app that grows in complexity will almost always need to handle these situations. I appreciate Todd's attention to detail. Topics covered include:
@@ -77,9 +83,11 @@ tooling.
 * Dependency Injection and Zones
 * Statement Management with Rx — although I recommend [NgRx](http://ngrx.io/)
 
+---
+
 ## TypeScript Basics
 
-This course is an introduction to [TypeScript](https://typescriptlang.org/). Developers coming from C## will appreciate this course in particular. In addition, this course can be purchased separately from the [package](https://bit.ly/2WubqhW) if you are building with TypeScript. Topics include:
+This course is an introduction to [TypeScript](https://typescriptlang.org/). Developers coming from C# will appreciate this course in particular. In addition, this course can be purchased separately from the [package](https://bit.ly/2WubqhW) if you are building with TypeScript. Topics include:
 
 * Overview, setup and source files
 * ES6/7 and TypeScript
@@ -88,6 +96,8 @@ This course is an introduction to [TypeScript](https://typescriptlang.org/). Dev
 * Type Aliases and Assertions
 * Diving into Interfaces
 * Classes, Properties and Inheritance
+
+---
 
 ## TypeScript Masterclass
 
@@ -102,6 +112,8 @@ Just as with any language, there are folks that use the basics and are off to th
 * Exploring Enums
 * Declaration Files
 * tsconfig and Compiler Options
+
+---
 
 ## NGRX Store + Effects
 
@@ -134,13 +146,16 @@ Below is a detailed list of the topics covered in this course:
 * Observables and Change Detection
 * Unit Testing
 
+---
+
 ## Conclusion
 
 After taking these courses, and comparing other available options, I can safely recommend the [Angular Ultimate Package](https://bit.ly/2WubqhW) for teams looking to get into Angular Enterprise development. Todd's down-to-earth approach of explaining complex concepts, makes these courses both fun and educational. As an added bonus,  Todd does the voice-overs himself so you get to learn Angular with a British accent. Win-Win-Win.
 
-![](/assets/post_headers/ultimate_courses_2.jpg)
+<div style="text-align:center"><img src="/assets/post_headers/ultimate_courses_2.jpg" alt="10 out of 10 Recommend"></div>
 
-#### More Information on Ultimate Courses
+
+### More Information on Ultimate Courses
 
 Ultimate Courses: Expert online courses in JavaScript, Angular, NGRX and TypeScript
 Expert online courses in JavaScript, Angular, NGRX and TypeScript. Join 50,000 others mastering new technologies with [Ultimate Courses](https://bit.ly/2WubqhW)

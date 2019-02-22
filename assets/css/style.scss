@@ -12,3 +12,10 @@ code {
     background-color: #F5F5F5;
     color:inherit;
 }
+
+hr {
+    width: calc(25% + 12px);
+    opacity: 0.1;
+    border: 1px solid black;
+    margin: 1.3em auto 1.5em;
+}

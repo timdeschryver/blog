@@ -105,7 +105,7 @@ import { FeatureRoutes } from './feature.routes';
 export class FeatureModule {}
 ```
 
-## Best Practice #3 - Add Lazy Loaded Features Top-Level Routes file
+## Best Practice #3 - Add Lazy Loaded Features to top-level Routes file
 
 > Lazy loading is the concept of deferring load of code assets (javascript, styles) until the user actually needs to utilize the resources. This can bring large performance increases to perceived load times of your application as the entire code set doesn't have to download on first paint. 
 

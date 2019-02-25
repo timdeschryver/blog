@@ -43,35 +43,35 @@ Let's go with the following approach:
 
 1. Create a new file named `app.routes.ts` in the root `src/app` directory. This file will hold our top-level `Routes` array. We will come back later throughout the article and fill this in. For now, let's scaffold it with the following contents:
 
-```typescript
-import { Routes } from '@angular/router';
+    ```typescript
+    import { Routes } from '@angular/router';
 
-export const AppRoutes: Routes = [];
-```
+    export const AppRoutes: Routes = [];
+    ```
 
 2. Register `AppRoutes` in the `app.module.ts` file. 
 
-* Import `AppRoutes` from `app.routes.ts`.
-* Import `RouterModule` from `@angular/router`. 
-* Add `RouterModule.forRoot(AppRoutes)` to your `imports` array
+    * Import `AppRoutes` from `app.routes.ts`.
+    * Import `RouterModule` from `@angular/router`. 
+    * Add `RouterModule.forRoot(AppRoutes)` to your `imports` array
 
-Your updated `app.module.ts` will look similar to the following:
+    Your updated `app.module.ts` will look similar to the following:
 
-```typescript
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { RouterModule } from '@angular/router';
-import { AppComponent } from './app.component';
-import { AppRoutes } from './app.routes';
+    ```typescript
+    import { NgModule } from '@angular/core';
+    import { BrowserModule } from '@angular/platform-browser';
+    import { RouterModule } from '@angular/router';
+    import { AppComponent } from './app.component';
+    import { AppRoutes } from './app.routes';
 
-@NgModule({
-  declarations: [AppComponent],
-  imports: [BrowserModule, RouterModule.forRoot(AppRoutes)],
-  providers: [],
-  bootstrap: [AppComponent]
-})
-export class AppModule {}
-```
+    @NgModule({
+      declarations: [AppComponent],
+      imports: [BrowserModule, RouterModule.forRoot(AppRoutes)],
+      providers: [],
+      bootstrap: [AppComponent]
+    })
+    export class AppModule {}
+    ```
 
 ## Best Practice #2 - Create a feature-level Routes array file
 
@@ -79,53 +79,53 @@ In similar fashion to how we constructed the `app.routes.ts` we will create a `f
 
 1. Create a new file named `feature/feature.routes.ts` where `feature` matches the name of your `feature.module.ts` prefix. This file will hold our feature-level `Routes` array. Keeping in mind that you would replace `Feature` with the actual name of your module, let's scaffold it with the following contents:
 
-```typescript
-import { Routes } from '@angular/router';
+    ```typescript
+    import { Routes } from '@angular/router';
 
-export const FeatureRoutes: Routes = [];
-```
+    export const FeatureRoutes: Routes = [];
+    ```
 
 2. Register `FeatureRoutes` in the `feature/feature.module.ts` file. We will make use of the `RouterModule.forChild` import so that these routes are automatically registered with lazy loading.
 
-* Import `FeatureRoutes` from `feature.routes.ts`.
-* Import `RouterModule` from `@angular/router`. 
-* Add `RouterModule.forChild(FeatureRoutes)` to your `imports` array
+    * Import `FeatureRoutes` from `feature.routes.ts`.
+    * Import `RouterModule` from `@angular/router`. 
+    * Add `RouterModule.forChild(FeatureRoutes)` to your `imports` array
 
-Your updated `feature/feature.module.ts` will look similar to the following:
+    Your updated `feature/feature.module.ts` will look similar to the following:
 
-```typescript
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { FeatureRoutes } from './feature.routes';
+    ```typescript
+    import { CommonModule } from '@angular/common';
+    import { NgModule } from '@angular/core';
+    import { RouterModule } from '@angular/router';
+    import { FeatureRoutes } from './feature.routes';
 
-@NgModule({
-  declarations: [],
-  imports: [CommonModule, RouterModule.forChild(FeatureRoutes)]
-})
-export class FeatureModule {}
-```
+    @NgModule({
+      declarations: [],
+      imports: [CommonModule, RouterModule.forChild(FeatureRoutes)]
+    })
+    export class FeatureModule {}
+    ```
 
-An example of a `feature.routes.ts` file with child route(s) may look like the following:
+    An example of a `feature.routes.ts` file with child route(s) may look like the following:
 
-```typescript
-import { Routes } from '@angular/router';
-import { FeatureOneComponent } from './feature-one.component';
-import { FeatureSpecificCanActivateGuard } from './_guards';
+    ```typescript
+    import { Routes } from '@angular/router';
+    import { FeatureOneComponent } from './feature-one.component';
+    import { FeatureSpecificCanActivateGuard } from './_guards';
 
-export const FeatureOneRoutes: Routes = [
-  {
-    path: '',
-    pathMatch: 'full',
-    redirectTo: 'feature-one-component'
-  },
-  {
-    path: 'feature-one-component',
-    component: FeatureOneComponent,
-    canActivate: [FeatureSpecificCanActivateGuard]
-  }
-];
-```
+    export const FeatureOneRoutes: Routes = [
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'feature-one-component'
+      },
+      {
+        path: 'feature-one-component',
+        component: FeatureOneComponent,
+        canActivate: [FeatureSpecificCanActivateGuard]
+      }
+    ];
+    ```
 
 ## Best Practice #3 - Add Lazy Loaded Features to top-level Routes file
 

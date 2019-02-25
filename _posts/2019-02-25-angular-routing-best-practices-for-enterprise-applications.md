@@ -7,6 +7,7 @@ date: 2019-02-24 05:34:51 -0500
 categories: angular
 tags: [angular, javascript, enterprise, typescript, routing]
 excerpt: The following represents a pattern that I've developed at my day job after building several enterpirse Angular applications. While most online tutorials do a great job laying out the fundamentals, I had a hard time locating articles that showed recommended conventions and patterns for large and scalable applications. With this pattern you should have a clean and concise organization for all routing related concerns in your applications.
+header-img: 'assets/post_headers/routing.jpg'
 ---
 
 ![](/assets/post_headers/routing.jpg)

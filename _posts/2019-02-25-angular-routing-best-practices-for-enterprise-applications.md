@@ -32,7 +32,7 @@ For context, this article assumes you are using the following version of Angular
 
 ---
 
-## Best Practice #1 - Create an `app.routes.ts` file
+## Best Practice #1 - Create a top-level Routes array file
 
 > The official [Angular docs recommend](https://angular.io/guide/router#refactor-the-routing-configuration-into-a-routing-module) creating a full-blown `app-routing.module.ts` for your top-level routing. I have found this extra layer to be unnecessary in most cases.
 
@@ -72,7 +72,7 @@ import { AppRoutes } from './app.routes';
 export class AppModule {}
 ```
 
-## Best Practice #2 - Create a `feature/feature.routes.ts` for each feature
+## Best Practice #2 - Create a feature-level Routes array file
 
 In similar fashion to how we constructed the `app.routes.ts` we will create a `feature.routes.ts` to list out the individual routes for this feature module. We want to keep our routes as close to the source as possible. This will be in keeping with a clean code approach, and having a good separation of concerns.
 

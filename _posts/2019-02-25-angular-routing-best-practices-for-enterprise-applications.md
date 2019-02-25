@@ -142,12 +142,17 @@ import { Routes } from '@angular/router';
 
 export const AppRoutes: Routes = [
   {
-    path: 'feature-a',
-    loadChildren: './feature-a/feature-a.module#FeatureAModule'
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'feature-one'
   },
   {
-    path: 'feature-b',
-    loadChildren: './feature-b/feature-b.module#FeatureBModule'
+    path: 'feature-one',
+    loadChildren: './feature-one/feature-one.module#FeatureOneModule'
+  },
+  {
+    path: 'feature-two',
+    loadChildren: './feature-two/feature-two.module#FeatureTwoModule'
   }
 ];
 ```
@@ -199,53 +204,41 @@ With Barrel Exporting (GOOD):
 import { AuthCanActivateGuard, RequireSaveCanDeactivateGuard } from 'src/app/_guards';
 ```
 
-### Organize Feature Route Guards
+An example application with a `_guards` directory would look as follows:
+
+![](/assets/post_headers/routing_directory.png)
+
+### Organize Feature-Specific Route Guards
 
 If you have guards that are *only* used in a particular `FeatureRoutes` array, then store these routes underneath a folder named `_guards` underneath your feature folder. Make sure to follow the same naming conventions defined above, as well as barrel exporting.
 
-An example feature guards directory would look as follows:
+* Place guards under a folder named `_guards` underneath your feature folder
+* Make sure to create a barrel export `index.ts` for clean importing
+* Make sure that your feature specific guards are *NOT* decorated with `@Injectable({providedIn: 'root'})` otherwise they will not be lazy loaded. In order to use the guards, edit the `feature.module.ts` and add the feature-specific guards to the `providers` array of the `FeatureModule`. 
 
+An example feature directory with `_guards` would look as follows:
 
+![](/assets/post_headers/routing_feature_directory.png)
 ---
-
-## Best Practice #6 - Define a 404 Route
 
 ---
 
 ## Finished Application Structure
 
-```shell
- ├── app
- │ ├── app-routing.module.ts
- │ ├── app.component.css
- │ ├── app.component.html
- │ ├── app.component.ts
- │ ├── app.module.ts
- │ ├── components
- │ ├── containers
- │ │    └── my-feature
- │ │         ├── my-feature.component.css
- │ │         ├── my-feature.component.html
- │ │         └── my-feature.component.ts
- ├── assets
- ├── browserslist
- ├── environments
- │ ├── environment.prod.ts
- │ └── environment.ts
- ├── index.html
- ├── main.ts
- ├── polyfills.ts
- ├── styles.css
- ├── test.ts
- ├── tsconfig.app.json
- ├── tsconfig.spec.json
- └── tslint.json
-```
+A completed application structure should look something like the following:
+
+![](/assets/post_headers/routing_completed_structure.png)
 
 ---
 
-## Example Repository
+## Example GitHub Repository
+
+I have created a demonstration repository on GitHub. Feel free to fork, clone, and submit PRs.
+
+[https://github.com/wesleygrimes/angular-routing-best-practices](https://github.com/wesleygrimes/angular-routing-best-practices)
 
 ---
 
 ## Conclusion
+
+It's important to remember that I have implemented these best practices in several "real world" applications. While I have found these best practices helpful, and maintainable, I do not believe they are an end-all be-all solution to organizing routes in projects; it's just what has worked for me. I am curious as to what you all think? Please feel free to offer any suggestions, tips, or best practices you've learned when building enterprise Angular applications with routing and I will update the article to reflect as such. Happy Coding!

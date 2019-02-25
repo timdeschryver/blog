@@ -116,6 +116,11 @@ import { FeatureSpecificCanActivateGuard } from './_guards';
 export const FeatureOneRoutes: Routes = [
   {
     path: '',
+    pathMatch: 'full',
+    redirectTo: 'feature-one-component'
+  },
+  {
+    path: 'feature-one-component',
     component: FeatureOneComponent,
     canActivate: [FeatureSpecificCanActivateGuard]
   }

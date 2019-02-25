@@ -11,8 +11,6 @@ excerpt: The following represents a pattern that I've developed at my day job af
 
 ![](/assets/post_headers/routing.jpg)
 
----
-
 ## Before We Get Started
 
 This article is not intended to be a tutorial on routing in Angular. If you are new to Routing in Angular then I highly recommend you check out one of the the following resources: 
@@ -20,15 +18,11 @@ This article is not intended to be a tutorial on routing in Angular. If you are 
 * [Ultimate Courses](https://bit.ly/2WubqhW)
 * [Official Angular Docs](https://angular.io/guide/router)
 
----
-
 ## Background
 
 The following represents a pattern that I've developed at my day job after building several enterpirse Angular applications. While most online tutorials do a great job laying out the fundamentals, I had a hard time locating articles that showed recommended conventions and patterns for large and scalable applications. 
 
 With this pattern you should have a clean and concise organization for all routing related concerns in your applications.
-
----
 
 ## Prerequisites
 
@@ -219,9 +213,6 @@ If you have guards that are *only* used in a particular `FeatureRoutes` array, t
 An example feature directory with `_guards` would look as follows:
 
 ![](/assets/post_headers/routing_feature_directory.png)
----
-
----
 
 ## Finished Application Structure
 
@@ -236,8 +227,6 @@ A completed application structure should look something like the following:
 I have created a demonstration repository on GitHub. Feel free to fork, clone, and submit PRs.
 
 [https://github.com/wesleygrimes/angular-routing-best-practices](https://github.com/wesleygrimes/angular-routing-best-practices)
-
----
 
 ## Conclusion
 

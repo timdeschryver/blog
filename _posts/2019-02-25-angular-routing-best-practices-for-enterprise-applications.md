@@ -37,11 +37,11 @@ For context, this article assumes you are using the following version of Angular
 
 > The official [Angular docs recommend](https://angular.io/guide/router#refactor-the-routing-configuration-into-a-routing-module) creating a full-blown `app-routing.module.ts` for your top-level routing. I have found this extra layer to be unnecessary in most cases.
 
+> HOT TIP: Only register top-level routes here, if you plan to implement feature modules, then the child routes would live underneath the respective `feature.routes.ts` file. We want to keep this top-level routes file as clean as possible and follow the component tree structure.
+
 Let's go with the following approach:
 
 1. Create a new file named `app.routes.ts` in the root `src/app` directory. This file will hold our top-level `Routes` array. We will come back later throughout the article and fill this in. For now, let's scaffold it with the following contents:
-
-> HOT TIP: Only register top-level routes here, if you plan to implement feature modules, then the child routes would live underneath the respective `feature.routes.ts` file. We want to keep this top-level routes file as clean as possible and follow the component tree structure.
 
 ```typescript
 import { Routes } from '@angular/router';

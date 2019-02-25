@@ -40,19 +40,207 @@ For context, this article assumes you are using the following version of Angular
 
 ## Best Practice #1 - Create an `app.routes.ts` file
 
-## Best Practice #2 - Create a `***.routes.ts` for each feature
+> The official [Angular docs recommend](https://angular.io/guide/router#refactor-the-routing-configuration-into-a-routing-module) creating a full-blown `app-routing.module.ts` for your top-level routing. I have found this extra layer to be unnecessary in most cases.
 
-## Best Practice #3 - Lazy-Loading Where It Makes Sense 
+Let's go with the following approach:
 
-## Best Practice #4 - Create an `app.guards.ts` file
+1. Create a new file named `app.routes.ts` in the root `src/app` directory. This file will hold our top-level `Routes` array. We will come back later throughout the article and fill this in. For now, let's scaffold it with the following contents:
 
-## Best Practice #5 - Create an `***.guards.ts` file for each feature
+> HOT TIP: Only register top-level routes here, if you plan to implement feature modules, then the child routes would live underneath the respective `feature.routes.ts` file. We want to keep this top-level routes file as clean as possible and follow the component tree structure.
 
-## Best Practice #6 - Create a 404 Route
+```typescript
+import { Routes } from '@angular/router';
+
+export const AppRoutes: Routes = [];
+```
+
+2. Register `AppRoutes` in the `app.module.ts` file. 
+
+* Import `AppRoutes` from `app.routes.ts`.
+* Import `RouterModule` from `@angular/router`. 
+* Add `RouterModule.forRoot(AppRoutes)` to your `imports` array
+
+Your updated `app.module.ts` will look similar to the following:
+
+```typescript
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule } from '@angular/router';
+import { AppComponent } from './app.component';
+import { AppRoutes } from './app.routes';
+
+@NgModule({
+  declarations: [AppComponent],
+  imports: [BrowserModule, RouterModule.forRoot(AppRoutes)],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule {}
+```
+
+## Best Practice #2 - Create a `feature/feature.routes.ts` for each feature
+
+In similar fashion to how we constructed the `app.routes.ts` we will create a `feature.routes.ts` to list out the individual routes for this feature module. We want to keep our routes as close to the source as possible. This will be in keeping with a clean code approach, and having a good separation of concerns.
+
+1. Create a new file named `feature/feature.routes.ts` where `feature` matches the name of your `feature.module.ts` prefix. This file will hold our feature-level `Routes` array. Keeping in mind that you would replace `Feature` with the actual name of your module, let's scaffold it with the following contents:
+
+```typescript
+import { Routes } from '@angular/router';
+
+export const FeatureRoutes: Routes = [];
+```
+
+2. Register `FeatureRoutes` in the `feature/feature.module.ts` file. We will make use of the `RouterModule.forChild` import so that these routes are automatically registered with lazy loading.
+
+* Import `FeatureRoutes` from `feature.routes.ts`.
+* Import `RouterModule` from `@angular/router`. 
+* Add `RouterModule.forChild(FeatureRoutes)` to your `imports` array
+
+Your updated `feature/feature.module.ts` will look similar to the following:
+
+```typescript
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { FeatureRoutes } from './feature.routes';
+
+@NgModule({
+  declarations: [],
+  imports: [CommonModule, RouterModule.forChild(FeatureRoutes)]
+})
+export class FeatureModule {}
+```
+
+## Best Practice #3 - Add Lazy Loaded Features to `app.routes.ts`
+> Lazy loading is the concept of deferring load of code assets (javascript, styles) until the user actually needs to utilize the resources. This can bring large performance increases to perceived load times of your application as the entire code set doesn't have to download on first paint. 
+
+> Angular provides a nice way to handle this with the `loadChildren` option for a given route. More information can be found in the [official Angular docs](https://angular.io/guide/router#lazy-loading-route-configuration).
+
+Once you've created your `app.routes.ts` and `*.routes.ts` files, you need to register any feature modules that you want to load lazily. 
+
+### Per Feature Module...
+
+Update the `AppRoutes` array in the `app.routes.ts` file to include a new route the feature:
+
+```typescript
+import { Routes } from '@angular/router';
+
+export const AppRoutes: Routes = [
+  {
+    path: 'feature',
+    loadChildren: './feature/feature.module#FeatureModule'
+  }
+];
+```
+
+By adding the above route to the array, when the user requests `/feature` in the browser, Angular lazy loads the module using the path given and then automatically registers any routes defined in the `feature.routes.ts` `FeatureRoutes` array using the `RouterModule.forChild` import.
+
+For each additional feature module, you would add another item to the `AppRoutes` array. If you have multiple features, it might look something like the following:
+
+```typescript
+import { Routes } from '@angular/router';
+
+export const AppRoutes: Routes = [
+  {
+    path: 'feature-a',
+    loadChildren: './feature-a/feature-a.module#FeatureAModule'
+  },
+  {
+    path: 'feature-b',
+    loadChildren: './feature-b/feature-b.module#FeatureBModule'
+  }
+];
+```
+
+## Best Practice #4 - Keep Router Guards Organized
+
+> TODO: Guards definition here
+
+Here are a few tips to keep your router guards organized. These are just guidelines, but I have found them to be very helpful.
+
+### Name Your Guards Well
+
+Guards should use the following naming convention: 
+
+* File Name: `name.function.guard.ts`
+* Class Name: `NameFunctionGuard`
+
+Each part being identified as:
+
+* `name` - this is the name of your guard. What are you guarding against? 
+* `function` - this is the function your guard will be attached to. Angular supports `CanActivate`, `CanActivateChild`, `CanDeactivate`, and `Resolve`.
+
+An example of an Auth Guard that is attached to the `CanActivate` function would be named as follows:
+
+* File Name: `auth.can-activate.guard`
+* Class Name: `AuthCanActivateGuard`
+
+### Group under `_guards` folder 
+
+Organize all top-level guards under a folder named `src/app/_guards`. I have seen apps dump guards in the top level directory and this is messy, especially if you end up with more than a few guards.
+
+### Use Barrel Exports 
+
+Make sure that `src/app/_guards` has a nice and clean `index.ts` barrel export. Barrel exports are simply `index.ts` files that group together and export all public files from a directory. An example is as follows:
+
+```typescript
+export * from './auth.can-activate.guard';
+export * from './require-save.can-deactivate.guard';
+```
+
+Without Barrel Exporting (BAD):
+```typescript
+import { AuthCanActivateGuard } from 'src/app/_guards/auth.can-activate.guard';
+import { RequireSaveCanDeactivateGuard } from 'src/app/_guards/require-save.can-deactivate.guard';
+```
+
+With Barrel Exporting (GOOD):
+```typescript
+import { AuthCanActivateGuard, RequireSaveCanDeactivateGuard } from 'src/app/_guards';
+```
+
+### Organize Feature Route Guards
+
+If you have guards that are *only* used in a particular `FeatureRoutes` array, then store these routes underneath a folder named `_guards` underneath your feature folder. Make sure to follow the same naming conventions defined above, as well as barrel exporting.
+
+An example feature guards directory would look as follows:
+
+
+---
+
+## Best Practice #6 - Define a 404 Route
 
 ---
 
 ## Finished Application Structure
+
+```shell
+ ├── app
+ │ ├── app-routing.module.ts
+ │ ├── app.component.css
+ │ ├── app.component.html
+ │ ├── app.component.ts
+ │ ├── app.module.ts
+ │ ├── components
+ │ ├── containers
+ │ │    └── my-feature
+ │ │         ├── my-feature.component.css
+ │ │         ├── my-feature.component.html
+ │ │         └── my-feature.component.ts
+ ├── assets
+ ├── browserslist
+ ├── environments
+ │ ├── environment.prod.ts
+ │ └── environment.ts
+ ├── index.html
+ ├── main.ts
+ ├── polyfills.ts
+ ├── styles.css
+ ├── test.ts
+ ├── tsconfig.app.json
+ ├── tsconfig.spec.json
+ └── tslint.json
+```
 
 ---
 

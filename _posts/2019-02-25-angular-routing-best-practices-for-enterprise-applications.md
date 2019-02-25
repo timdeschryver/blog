@@ -105,7 +105,8 @@ import { FeatureRoutes } from './feature.routes';
 export class FeatureModule {}
 ```
 
-## Best Practice #3 - Add Lazy Loaded Features to `app.routes.ts`
+## Best Practice #3 - Add Lazy Loaded Features Top-Level Routes file
+
 > Lazy loading is the concept of deferring load of code assets (javascript, styles) until the user actually needs to utilize the resources. This can bring large performance increases to perceived load times of your application as the entire code set doesn't have to download on first paint. 
 
 > Angular provides a nice way to handle this with the `loadChildren` option for a given route. More information can be found in the [official Angular docs](https://angular.io/guide/router#lazy-loading-route-configuration).

@@ -30,7 +30,7 @@ $ npm install -g typescript tslint tslint-etc
 
 #### Create a temporary `tslint` config file
 
-Create a new file named `tslint-imports.config` in the root of your project. This creates a hyper-focused tslint process that will only check for unused declarations. It is _important to note_ that this will throw `tslint` errors on unused imports, parameters and variables. We are only using this for the `--fix` process. As such, the `tslint-etc` rules only autofix unused imports. 
+Create a new file named `tslint-imports.json` in the root of your project. This creates a hyper-focused tslint process that will only check for unused declarations. It is _important to note_ that this will throw `tslint` errors on unused imports, parameters and variables. We are only using this for the `--fix` process. As such, the `tslint-etc` rules only autofix unused imports. 
 
 This file needs the following contents:
 

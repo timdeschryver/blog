@@ -405,4 +405,6 @@ I want to take a moment and thank all those I was able to glean this information
 
 * [Here is what you need to know about dynamic components in Angular](https://blog.angularindepth.com/here-is-what-you-need-to-know-about-dynamic-components-in-angular-ac1e96167f9e)
 
+* [The Need for Speed Lazy Load Non-Routable Modules in Angular](https://netbasal.com/the-need-for-speed-lazy-load-non-routable-modules-in-angular-30c8f1c33093)
+
 * Also, a huge thank you to Medium reader [ivanwonder](https://twitter.com/ivanwond) and Github user [Milan Saraiya](https://github.com/milansar) for pointing this out and providing a fork example of resolution.

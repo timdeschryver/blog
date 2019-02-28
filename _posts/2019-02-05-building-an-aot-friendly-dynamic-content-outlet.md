@@ -44,11 +44,10 @@ We will come back later to this module and wire things up.
 
 ### Build the Dynamic Content Outlet Registry
 
-Create a new file underneath the newly created folder `src/app/dynamic-content-outlet` named `dynamic-content-outlet.registry.ts`. This will serve as the placeholder for array mapping component name to component type, module path and module name. For now, it will be an empty array as follows.
+Create a new file underneath the newly created folder `src/app/dynamic-content-outlet` named `dynamic-content-outlet.registry.ts`. This will serve as the placeholder for array mapping component name to module path and module name. For now, it will be an empty array as follows.
 
 ```typescript
 interface RegistryItem {
-  componentType: any;
   componentName: string;
   modulePath: string;
   moduleName: string;
@@ -84,7 +83,12 @@ export class DynamicContentOutletErrorComponent {
 
 ### Build the Dynamic Content Outlet Service
 
-Create a new file underneath the folder `src/app/dynamic-content-outlet/dynamic-content-outlet.service.ts`. This service encapsulates the logic that loads dynamic components using SystemJS and renders them into the Dynamic Content Outlet. If an error occurs, a `DynamicContentOutletErrorComponent` is rendered instead with the error message included.
+Create a new file underneath the folder `src/app/dynamic-content-outlet/dynamic-content-outlet.service.ts`. 
+
+* This service encapsulates the logic that loads dynamic components using SystemJS and renders them into the Dynamic Content Outlet. 
+* It uses the `DynamicContentOutletRegistry` to lookup the module by `componentName`.
+* It also makes use of a new `static` property that we will add later on to each module we wish to dynamically load named `dynamicComponentsMap`. This allows us to get the type literal for the given `componentName` so that the `resolveComponentFactory` can instantiate the correct component. You might ask why we didn't just add a fourth property to the `DynamicContentOutletRegistry`, well this is because if we import the type in the registry, then it defeats the purpose of lazy loading these modules as the the type will be included in the main bundle.
+* If an error occurs, a `DynamicContentOutletErrorComponent` is rendered instead with the error message included.
 
 ```typescript
 import {
@@ -92,10 +96,15 @@ import {
   ComponentRef,
   Injectable,
   Injector,
-  NgModuleFactoryLoader
+  NgModuleFactoryLoader,
+  Type
 } from '@angular/core';
 import { DynamicContentOutletErrorComponent } from './dynamic-content-outlet-error.component';
 import { DynamicContentOutletRegistry } from './dynamic-content-outlet.registry';
+
+type ModuleWithDynamicComponents = Type<any> & {
+  dynamicComponentsMap: {};
+};
 
 @Injectable()
 export class DynamicContentOutletService {
@@ -114,18 +123,13 @@ export class DynamicContentOutletService {
       );
     }
 
-    const componentType = this.getComponentTypeForComponent(componentName);
-
-    if (!componentType) {
-      return this.getDynamicContentErrorComponent(
-        `Unable to derive componentType from component: ${componentName} in dynamic-content.registry.ts`
-      );
-    }
-
     try {
       const moduleFactory = await this.moduleLoader.load(modulePath);
       const moduleReference = moduleFactory.create(this.injector);
       const componentResolver = moduleReference.componentFactoryResolver;
+
+      const componentType = (moduleFactory.moduleType as ModuleWithDynamicComponents)
+        .dynamicComponentsMap[componentName];
 
       const componentFactory = componentResolver.resolveComponentFactory(
         componentType
@@ -148,20 +152,8 @@ export class DynamicContentOutletService {
     );
 
     if (registryItem && registryItem.modulePath) {
-      // imported modules must be in the format 'path##moduleName'
-      return `${registryItem.modulePath}##${registryItem.moduleName}`;
-    }
-
-    return null;
-  }
-
-  private getComponentTypeForComponent(componentName: string) {
-    const registryItem = DynamicContentOutletRegistry.find(
-      i => i.componentName === componentName
-    );
-
-    if (registryItem && registryItem.componentType) {
-      return registryItem.componentType;
+      // imported modules must be in the format 'path#moduleName'
+      return `${registryItem.modulePath}#${registryItem.moduleName}`;
     }
 
     return null;
@@ -278,23 +270,45 @@ Phew! Take a deep breath and grab a cup of coffee (french press fair trade organ
 
 ![](https://cdn-images-1.medium.com/max/1600/1*8BhahXd-DWmGj_n-mhP-gA.jpeg)
 
-### Register your component(s)
+For any component that you would like dynamically rendered you need to do the following four steps. **_These steps must be followed exactly_**_._
 
-For any component that you would like dynamically rendered you need to do the following three steps. **_These steps must be followed exactly_**_._
+### 1. Prepare your module for dynamic import
 
-1. Confirm that the component is listed in the `entryComponents` array in the module that the component is a part of.
+* Confirm that the component is listed in the `entryComponents` array in the module that the component is a part of.
 
-2. Add your component to the Dynamic Content Outlet Registry in `src/app/dynamic-content-outlet/dynamic-content-outlet.registry.ts`.
+* Add to the module, a new `static` property called `dynamicComponentsMap`. This allows us to get the type literal for the given `componentName` so that the `resolveComponentFactory` can instantiate the correct component.
 
-For any component that you would like dynamically rendered, add a new entry to the `DynamicContentOutletRegistry` array in `dynamic-content-outlet.registry.ts`.
+> You might ask why we didn't just add a fourth property to the `DynamicContentOutletRegistry` named `componentType`; well this is because if we import the type in the registry, then it defeats the purpose of lazy loading these modules as the the type will be included in the main bundle. 
+
+A prepared module might look as follows: 
+
+```typescript
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { DynamicMultipleOneComponent } from './dynamic-multiple-one.component';
+import { DynamicMultipleTwoComponent } from './dynamic-multiple-two.component';
+
+@NgModule({
+  declarations: [MySpecialDynamicContentComponent],
+  imports: [CommonModule],
+  entryComponents: [MySpecialDynamicContentComponent]
+})
+export class MySpecialDynamicContentModule {
+  static dynamicComponentsMap = {
+    MySpecialDynamicContentComponent
+  };
+}
+```
+
+### 2. Add your dynamic component(s) to the registry
+
+For any component that you would like dynamically rendered, add a new entry to the `DynamicContentOutletRegistry` array in `src/app/dynamic-content-outlet/dynamic-content-outlet.registry.ts`.
 
 The following properties must be filled out:
 
 - `componentName`: This should match exactly the name of the Component you wish to load dynamically.
 
-- `componentType`: This should be the literal type of the Component you wish to load dynamically. Not wrapped in quotes.
-
-- `modulePath`: The absolute path to the module containing the component you wish to load dynamically. This is only the path to the module and does NOT include `moduleName` after a `##`.
+- `modulePath`: The absolute path to the module containing the component you wish to load dynamically. This is only the path to the module and does NOT include `moduleName` after a `#`.
 
 - `moduleName`: This is the exact name of the module.
 
@@ -303,13 +317,14 @@ The following properties must be filled out:
 ```typescript
 {
   componentName: 'MySpecialDynamicContentComponent',
-  componentType: MySpecialDynamicContentComponent,
   modulePath: 'src/app/my-special-dynamic-content/my-special-dynamic-content.module',
   moduleName: 'MySpecialDynamicContentModule'
 },
 ```
 
-3. In your `angular.json` update the `projects > ** > architect > build > options > lazyModules` array and add an item for each module that you added to the registry in order for the Angular AOT compiler to detect and pre-compile your dynamic modules. If you have multiple projects in a folder, make sure you add this for the correct project you are importing and using dynamic modules in. The updated file will look similar to this:
+### 3. Add your dynamic modules to the lazyModules array
+
+In your `angular.json` update the `projects > ** > architect > build > options > lazyModules` array and add an item for each module that you added to the registry in order for the Angular AOT compiler to detect and pre-compile your dynamic modules. If you have multiple projects in a folder, make sure you add this for the correct project you are importing and using dynamic modules in. The updated file will look similar to this:
 
 ```json
 {
@@ -358,7 +373,7 @@ export class AppModule {}
 </app-dynamic-content-outlet>
 ```
 
-This is very similar in nature to Angular’s built-in `<router-outlet>/</router-outlet>` tag. Please note: the value of the input `componentName` is set during initialization of the parent component either from a Component TypeScript class field or set in the in the actual template. The value can also be retrieved from an external source such as a backend web service, but must be provided at initialization.
+This is very similar in nature to Angular’s built-in `<router-outlet>/</router-outlet>` tag.
 
 3. Happy `ng serve --prod` ing!
 
@@ -386,6 +401,8 @@ I would highly recommend enrolling in the Ultimate Angular courses. It is well w
 
 I want to take a moment and thank all those I was able to glean this information from. I did not come up with all this on my own, but I was able to get a working solution by combining parts from each of these articles!
 
-[Dynamically Loading Components with Angular CLI](https://blog.angularindepth.com/dynamically-loading-components-with-angular-cli-92a3c69bcd28)
+* [Dynamically Loading Components with Angular CLI](https://blog.angularindepth.com/dynamically-loading-components-with-angular-cli-92a3c69bcd28)
 
-[Here is what you need to know about dynamic components in Angular](https://blog.angularindepth.com/here-is-what-you-need-to-know-about-dynamic-components-in-angular-ac1e96167f9e)
+* [Here is what you need to know about dynamic components in Angular](https://blog.angularindepth.com/here-is-what-you-need-to-know-about-dynamic-components-in-angular-ac1e96167f9e)
+
+* Also, a huge thank you to Medium reader [ivanwonder](https://twitter.com/ivanwond) and Github user [Milan Saraiya](https://github.com/milansar) for pointing this out and providing a fork example of resolution.

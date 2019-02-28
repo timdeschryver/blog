@@ -200,6 +200,7 @@ An example of an Auth Guard that is attached to the `CanActivate` function would
 Organize all top-level guards under a folder named `src/app/_guards`. I have seen apps dump guards in the top level directory and this is messy, especially if you end up with more than a few guards.
 
 ### Use Barrel Exports 
+> The jury is still out on whether or not using barrel exports is officially considered a "best practice" or even supported by the Angular style guide. However, I am a big fan of the clean organization this provides. This method is offered as a suggestion.
 
 Make sure that `src/app/_guards` has a nice and clean `index.ts` barrel export. Barrel exports are simply `index.ts` files that group together and export all public files from a directory. An example is as follows:
 
@@ -208,13 +209,13 @@ export * from './auth.can-activate.guard';
 export * from './require-save.can-deactivate.guard';
 ```
 
-Without Barrel Exporting (BAD):
+Without Barrel Exporting:
 ```typescript
 import { AuthCanActivateGuard } from 'src/app/_guards/auth.can-activate.guard';
 import { RequireSaveCanDeactivateGuard } from 'src/app/_guards/require-save.can-deactivate.guard';
 ```
 
-With Barrel Exporting (GOOD):
+With Barrel Exporting:
 ```typescript
 import { AuthCanActivateGuard, RequireSaveCanDeactivateGuard } from 'src/app/_guards';
 ```
@@ -229,7 +230,6 @@ If you have guards that are *only* used in a particular `FeatureRoutes` array, t
 
 * Place guards under a folder named `_guards` underneath your feature folder
 * Make sure to create a barrel export `index.ts` for clean importing
-* Make sure that your feature specific guards are *NOT* decorated with `@Injectable({providedIn: 'root'})` otherwise they will not be lazy loaded. In order to use the guards, edit the `feature.module.ts` and add the feature-specific guards to the `providers` array of the `FeatureModule`. 
 
 An example feature directory with `_guards` would look as follows:
 

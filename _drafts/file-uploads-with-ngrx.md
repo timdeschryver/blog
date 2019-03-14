@@ -34,18 +34,14 @@ Before diving into building the file upload control, make sure that you have the
 2. NgRx dependencies installed
 3. NgRx Store wired up in your application. [e.g. Follow this guide](https://wesleygrimes.com/angular/2018/05/30/ngrx-best-practices-for-enterprise-angular-applications.html)
 
-## Add the Upload File Control to your Component
-
-!!TODO
+***
 
 ## Create the Upload File Service
 
 Let's create a brand new service in `Angular`. This service will be responsible for handling the file upload from the client to the server backend. We will use the amazing [`HttpClient`](https://angular.io/guide/http) provided with `Angular`. 
 
 
-### Generate the service using the Angular CLI
-
-> [Click here](https://angular.io/cli) for more details on using the powerful Angular CLI
+### Generate the service
 
 ```shell
 $ ng g service file-upload
@@ -534,6 +530,7 @@ export class UploadDocumentEffects {
   }
 }
 ```
+
 ### Create the Feature Selectors
 
 > If you would like to learn more about **NgRx Selectors**, then check out the [official docs](https://ngrx.io/guide/store/selectors).
@@ -598,3 +595,30 @@ export const selectUploadDocumentCancelRequest: MemoizedSelector<
   boolean
 > = createSelector(selectUploadDocumentFeatureState, getCancelRequest);
 ```
+
+***
+
+## Let's Review So Far
+
+Up to this point we have created a new `FileUploadService` that calls our backend `API` to upload a `File` object. We have also created a new `UploadFileStore` feature store that provides `Actions`, a `Reducer`, `Effects`, and `Selectors` to manage the file upload process.
+
+Now that we have the foundation laid out for us we can turn our attention to the user interface and wire-up a new component to the `UploadFileStore` that we created to manage our process. This will be the fun part!
+
+***
+
+## Create the Upload File Component
+
+Let's start by creating a brand-new `Component`. This component will consist of the following elements:
+
+* An `input` element for the user to interact with to upload a file
+* 
+
+## Generate the component
+
+> [Click here](https://angular.io/cli) for more details on using the powerful Angular CLI
+
+```shell
+$ ng g component upload-file
+```
+
+

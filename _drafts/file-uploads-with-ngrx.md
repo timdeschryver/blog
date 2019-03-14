@@ -592,6 +592,66 @@ export const selectUploadFileCancelRequest: MemoizedSelector<
 > = createSelector(selectUploadFileFeatureState, getCancelRequest);
 ```
 
+### Update the Feature Module
+
+We now need to update the feature module `UploadFileStoreModule` to wire-up the store.
+
+The completed `UploadFileStoreModule` should look similar to this:
+
+```typescript
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import { UploadFileEffects } from './effects';
+import { featureReducer } from './reducer';
+
+@NgModule({
+  declarations: [],
+  imports: [
+    CommonModule,
+    StoreModule.forFeature('uploadFile', featureReducer),
+    EffectsModule.forFeature([UploadFileEffects])
+  ],
+  providers: [UploadFileEffects]
+})
+export class UploadFileStoreModule {}
+```
+
+#### Import this module where needed
+
+Make sure to import this new `UploadFileStoreModule` where it is needed. In this example, we will import this into the `AppModule` as we do not have any lazy-loaded features.
+
+#### Update your AppModule to import Store & Effects
+
+Last, make sure that you update your `AppModule` to import the `StoreModule.forRoot` and `EffectsModule.forRoot`.
+
+An updated `AppModule` may look as follows:
+
+```typescript
+import { HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import { AppComponent } from './app.component';
+import { UploadFileStoreModule } from './upload-file-store/upload-file-store.module';
+
+@NgModule({
+  declarations: [AppComponent],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    StoreModule.forRoot({}),
+    EffectsModule.forRoot([]),
+    UploadFileStoreModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule {}
+```
+
 ***
 
 ## Let's Review So Far

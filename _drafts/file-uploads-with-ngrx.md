@@ -879,6 +879,20 @@ export class UploadFileComponent implements OnInit {
 
 We are going to add five (5) major parts to our upload file component.
 
+#### Create wrapper div to resolve all the necessary async observables
+
+> This could made a lot simpler by following a connected container -- dumb component architecture
+
+Thanks Cory Rylan for this great [tip](https://coryrylan.com/blog/subscribing-to-multiple-observables-in-angular-components)!
+
+Let's define an `ng-container` to wrap and resolve our async observables, `progress$` and `completed$`:
+
+```html
+<ng-container *ngIf="{ progress: progress$ | async, completed: completed$ | async } as values;">
+...
+</ng-container>
+```
+
 #### Add the input field
 
 There is no upload file button, rather we will make use of the built-in input component and hook to the `change` event. Any time a file is added to the form this event will fire. We also only want to display this form if we are accepting new files to be uploaded. We will use the `*ngIf` structural directive to help here.
@@ -935,28 +949,30 @@ This button will utilize the `*ngIf` to only display if the upload is complete. 
 #### Finished Component *.html file
 
 ```html
-<div class="message" *ngIf="!isUploadInProgress(progress) && !isUploadWaitingToComplete(progress, completed) && !completed">
-  <input #file type="file" multiple (change)="uploadFile($event)" />
-</div>
+<ng-container *ngIf="{ progress: progress$ | async, completed: completed$ | async } as values;">
+  <div class="message" *ngIf="!isUploadInProgress(progress) && !isUploadWaitingToComplete(progress, completed) && !completed">
+    <input #file type="file" multiple (change)="uploadFile($event)" />
+  </div>
 
-<div class="message" *ngIf="isUploadWaitingToComplete(progress, completed)">
-  <div style="margin-bottom: 14px;">Uploading... Almost Complete...</div>
-</div>
+  <div class="message" *ngIf="isUploadWaitingToComplete(progress, completed)">
+    <div style="margin-bottom: 14px;">Uploading... Almost Complete...</div>
+  </div>
 
-<div class="message" *ngIf="isUploadInProgress(progress)">
-  <div style="margin-bottom: 14px;">Uploading... {{progress}}%</div>
-</div>
+  <div class="message" *ngIf="isUploadInProgress(progress)">
+    <div style="margin-bottom: 14px;">Uploading... {{progress}}%</div>
+  </div>
 
-<div class="message" *ngIf="isUploadInProgress(progress) || isUploadWaitingToComplete(progress, completed)">
-  <button (click)="cancelUpload()">Cancel Upload</button>
-</div>
+  <div class="message" *ngIf="isUploadInProgress(progress) || isUploadWaitingToComplete(progress, completed)">
+    <button (click)="cancelUpload()">Cancel Upload</button>
+  </div>
 
-<div class="message" *ngIf="completed">
-  <h4>
-    File has been uploaded successfully!
-  </h4>
-  <button (click)="resetUpload()">Upload Another File</button>
-</div>
+  <div class="message" *ngIf="completed">
+    <h4>
+      File has been uploaded successfully!
+    </h4>
+    <button (click)="resetUpload()">Upload Another File</button>
+  </div>
+</ng-container>
 ```
 
 ## Add the Component to our AppComponent
@@ -964,7 +980,7 @@ This button will utilize the `*ngIf` to only display if the upload is complete. 
 For the purposes of this article we will add our new `UploadFileComponent` component to our `AppComponent`. The template will look as follows:
 
 ```html
-<upload-file></upload-file>
+<app-upload-file></app-upload-file>
 ```
 
 ***

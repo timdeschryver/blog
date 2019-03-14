@@ -365,11 +365,13 @@ A couple comments about what this effect is going to do:
 
 * Listen for the `UPLOAD_REQUEST` action and then make calls to the `fileUploadService.uploadFile` service method to initiate the upload process.
 
-* Use the [`concatMap`](https://rxjs.dev/api/operators/concatMap) `rxjs` operator here so that multiple file upload requests are queued up and processed in the order they were dispatched.
+* Use the [`concatMap`](https://rxjs.dev/api/operators/concatMap) RxJS operator here so that multiple file upload requests are queued up and processed in the order they were dispatched.
 
-* Use the [`takeUntil`](https://rxjs.dev/api/operators/takeUntil) `rxjs` operator connected to the `state.cancel` property, so that we can **short-circuit** any requests that are in-flight.
+* Use the [`takeUntil`](https://rxjs.dev/api/operators/takeUntil) RxJS operator connected to the `state.cancel` property, so that we can **short-circuit** any requests that are in-flight.
 
-* Use the `map` operator to route specific `HttpEvent` responses to dispatch specific `Actions` that we have defined in our `Store`.
+* Use the [`map`](https://rxjs.dev/api/operators/map) RxJS operator to route specific `HttpEvent` responses to dispatch specific `Actions` that we have defined in our `Store`.
+
+* Use the [`catchError`](https://rxjs.dev/api/operators/catchError) RxJS operator to handle any errors that may be thrown from the `HttpClient`.
 
 The effect will look something like this:
 
@@ -391,12 +393,74 @@ uploadRequestEffect$: Observable<Action> = this.actions$.pipe(
             )
           )
       ),
-      map(event => this.onUploadProgress(event))
+      map(event => this.handleProgress(event)),
+      catchError(error => of(this.handleError(error)))
     )
   )
 );
 ```
 
+#### Add the handleProgress private method
+
+> For more information on listening to progress events, check out the [official docs guide from here](https://angular.io/guide/http#listening-to-progress-events).
+
+This method will be responsible for mapping specific `HttpEventType` to `Actions` that are dispatched.
+
+* `HttpEventType.Sent` - This event occurs when the upload process has begun. We will dispatch an `UPLOAD_PROGRESS` action with a payload of `progress: 0` to denote that the process has begun.
+
+* `HttpEventType.UploadProgress` - This event occurs when the upload process has made progress. We will dispatch an `UPLOAD_PROGRESS` action with a payload of `progress: Math.round((100 * event.loaded) / event.total)` to calculate the actual percentage complete of upload. This is because the `HttpClient` returns an `event.loaded` and `event.total` property in whole number format.
+
+* `HttpEventType.Response` - This event occurs when the upload process has finished. It is important to note that this could be a success or failure so we need to interrogate the `event.status` to check for `200`. We will dispatch the `UPLOAD_SUCCESS` action if `event.status === 200` and `UPLOAD_FAILURE` if the `event.status !== 200` passing the `event.statusText` as the error payload.
+
+```typescript
+private handleProgress(event: HttpEvent<any>) {
+  switch (event.type) {
+    case HttpEventType.Sent: {
+      return new featureActions.UploadProgressAction({ progress: 0 });
+    }
+    case HttpEventType.UploadProgress: {
+      return new featureActions.UploadProgressAction({
+        progress: Math.round((100 * event.loaded) / event.total)
+      });
+    }
+    case HttpEventType.Response: {
+      if (event.status === 200) {
+        return new featureActions.UploadSuccessAction();
+      } else {
+        return new featureActions.UploadFailureAction({
+          error: event.statusText
+        });
+      }
+    }
+    default: {
+      return new featureActions.UploadProgressAction({ progress: 0 });
+    }
+  }
+}
+```
+
+#### Add the handleError private method
+
+> For more information on handling `HttpClient` errors, check out the [official docs guide from here](https://angular.io/guide/http#getting-error-details).
+
+This method will be responsible for handling any errors that may be throw from the `HttpClient` during requests.
+
+```typescript
+private handleError(error: HttpErrorResponse) {
+  if (error.error instanceof ErrorEvent) {
+    // A client-side or network error occurred. Handle it accordingly.
+    return new featureActions.UploadFailureAction({
+      error: error.error.message
+    });
+  } else {
+    // The backend returned an unsuccessful response code.
+    // The response body may contain clues as to what went wrong,
+    return new featureActions.UploadFailureAction({
+      error: error.error
+    });
+  }
+}
+```
 
 #### Completed Feature Effect
 

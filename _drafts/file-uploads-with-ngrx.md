@@ -909,7 +909,7 @@ This message will be displayed when the progress is 100%, but we still haven't a
 
 ```html
 <div class="message" *ngIf="isUploadWaitingToComplete(values.progress, values.completed)">
-  <div style="margin-bottom: 14px;">Uploading... Almost Complete...</div>
+  <div style="margin-bottom: 14px;">Uploading... Almost Complete...Waiting for Server...</div>
 </div>
 ```
 
@@ -965,7 +965,7 @@ This button will utilize the `*ngIf` to only display if there is an error messag
   </div>
 
   <div class="message" *ngIf="isUploadWaitingToComplete(values.progress, values.completed)">
-    <div style="margin-bottom: 14px;">Uploading... Almost Complete...</div>
+    <div style="margin-bottom: 14px;">Uploading... Almost Complete...Waiting for Server...</div>
   </div>
 
   <div class="message" *ngIf="isUploadInProgress(values.progress)">
@@ -1016,22 +1016,32 @@ For the purposes of this article we will add our new `UploadFileComponent` compo
 
 ## (Bonus Feature) Back-end REST Endpoint
 
-For those of you brave souls that have made it this far... You might be asking what the backend `API` endpoint looks like. Well, here's an example `ASP.NET Core` `Controller` `Action` offered free of charge ;-)
+For those of you brave souls that have made it this far... You might be asking what the backend `API` endpoint looks like. Well, here's an example `ASP.NET Core` `Controller` offered free of charge ;-)
 
 ```csharp
-[HttpPost("[action]")]
-public async Task<IActionResult> UploadFile(List<IFormFile> files)
+public class FileController : ControllerBase
 {
-    var file = files[0];
+    [HttpPost("")]
+    public async Task<IActionResult> Post(List<IFormFile> files)
+    {
+        try
+        {
+            foreach (var file in files)
+            {
+                Console.WriteLine($"Begin Uploaded File: {file.FileName}");
 
-    try
-    {
-        await _dataService.WorkWithFileAsync(file);
-        return Ok();
-    }
-    catch (Exception ex)
-    {
-        return BadRequest($"Unable to work with file {file.FileName}. Exception Details: {ex.GetBaseException()?.Message}");
+                //simulate upload
+                Task.Delay(5000).Wait();
+
+                Console.WriteLine($"Finished Uploaded File: {file.FileName}");
+            }
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest($"Unable to upload file(s).");
+        }
     }
 }
 ```

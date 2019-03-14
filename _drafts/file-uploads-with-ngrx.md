@@ -55,18 +55,18 @@ Because we are using the `HttpClient` to make requests to the backend, we need t
 constructor(private httpClient: HttpClient) {}
 ```
 
-### Add a private field for `_baseUrl`
+### Add a private field for `API_BASE_URL`
 
 > I typically store `API` base urls in the `src/environments` area. If you're interested in learning more about `environments` in `Angular` then check out this great article: [Becoming an Angular Environmentalist](https://blog.angularindepth.com/becoming-an-angular-environmentalist-45a48f7c20d8)
 
-Let's create a new private field named `_baseUrl` so that we can use this in our calls to the backend `API`. 
+Let's create a new private field named `API_BASE_URL` so that we can use this in our calls to the backend `API`. 
 
 One way to accomplish this would be to do the following:
 
 ```typescript
 import { environment } from 'src/environments/environment';
 ...
-private _baseUrl = environment.apiBaseUrl;
+private API_BASE_URL = environment.apiBaseUrl;
 ```
 
 ### Add a uploadFile public method
@@ -88,7 +88,7 @@ public uploadFile(file: File): Observable<HttpEvent<{}>> {
 
   const req = new HttpRequest(
     'POST',
-    `${this._baseUrl}api/file`,
+    `${this.API_BASE_URL}api/file`,
     formData,
     options
   );
@@ -110,7 +110,7 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class FileUploadService {
-  private _baseUrl = environment.apiBaseUrl;
+  private API_BASE_URL = environment.apiBaseUrl;
 
   constructor(private httpClient: HttpClient) {}
 
@@ -124,7 +124,7 @@ export class FileUploadService {
 
     const req = new HttpRequest(
       'POST',
-      `${this._baseUrl}api/file`,
+      `${this.API_BASE_URL}api/file`,
       formData,
       options
     );

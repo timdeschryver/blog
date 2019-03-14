@@ -441,13 +441,13 @@ This method will be responsible for handling any errors that may be throw from t
 private handleError(error: HttpErrorResponse) {
   if (error.error instanceof ErrorEvent) {
     // A client-side or network error occurred. Handle it accordingly.
-    return new featureActions.UploadFailureAction({
+    return new fromFeatureActions.UploadFailureAction({
       error: error.error.message
     });
   } else {
     // The backend returned an unsuccessful response code.
     // The response body may contain clues as to what went wrong,
-    return new featureActions.UploadFailureAction({
+    return new fromFeatureActions.UploadFailureAction({
       error: error.error
     });
   }
@@ -459,12 +459,16 @@ private handleError(error: HttpErrorResponse) {
 The completed effect will look something like this:
 
 ```typescript
-import { HttpEvent, HttpEventType } from '@angular/common/http';
+import {
+  HttpErrorResponse,
+  HttpEvent,
+  HttpEventType
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action, Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { concatMap, filter, map, takeUntil } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { catchError, concatMap, filter, map, takeUntil } from 'rxjs/operators';
 import { FileUploadService } from 'src/app/_services';
 import * as fromFeatureActions from './actions';
 import * as fromFeatureSelectors from './selectors';
@@ -495,7 +499,8 @@ export class UploadFileEffects {
               )
             )
         ),
-        map(event => this.onUploadProgress(event))
+        map(event => this.onUploadProgress(event)),
+        catchError(error => of(this.handleError(error)))
       )
     )
   );
@@ -522,6 +527,21 @@ export class UploadFileEffects {
       default: {
         return new fromFeatureActions.UploadProgressAction({ progress: 0 });
       }
+    }
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    if (error.error instanceof ErrorEvent) {
+      // A client-side or network error occurred. Handle it accordingly.
+      return new fromFeatureActions.UploadFailureAction({
+        error: error.error.message
+      });
+    } else {
+      // The backend returned an unsuccessful response code.
+      // The response body may contain clues as to what went wrong,
+      return new fromFeatureActions.UploadFailureAction({
+        error: error.error
+      });
     }
   }
 }
@@ -551,15 +571,15 @@ import {
 } from '@ngrx/store';
 import { State } from './state';
 
-export const getError = (state: State): any => state.error;
+const getError = (state: State): any => state.error;
 
-export const getIsLoading = (state: State): boolean => state.isLoading;
+const getIsLoading = (state: State): boolean => state.isLoading;
 
-export const getCompleted = (state: State): boolean => state.completed;
+const getCompleted = (state: State): boolean => state.completed;
 
-export const getProgress = (state: State): number => state.progress;
+const getProgress = (state: State): number => state.progress;
 
-export const getCancelRequest = (state: State): boolean => state.cancel;
+const getCancelRequest = (state: State): boolean => state.cancel;
 
 export const selectUploadFileFeatureState: MemoizedSelector<
   object,
@@ -569,27 +589,42 @@ export const selectUploadFileFeatureState: MemoizedSelector<
 export const selectUploadFileError: MemoizedSelector<
   object,
   any
-> = createSelector(selectUploadFileFeatureState, getError);
+> = createSelector(
+  selectUploadFileFeatureState,
+  getError
+);
 
 export const selectUploadFileIsLoading: MemoizedSelector<
   object,
   boolean
-> = createSelector(selectUploadFileFeatureState, getIsLoading);
+> = createSelector(
+  selectUploadFileFeatureState,
+  getIsLoading
+);
 
 export const selectUploadFileCompleted: MemoizedSelector<
   object,
   boolean
-> = createSelector(selectUploadFileFeatureState, getCompleted);
+> = createSelector(
+  selectUploadFileFeatureState,
+  getCompleted
+);
 
 export const selectUploadFileProgress: MemoizedSelector<
   object,
   number
-> = createSelector(selectUploadFileFeatureState, getProgress);
+> = createSelector(
+  selectUploadFileFeatureState,
+  getProgress
+);
 
 export const selectUploadFileCancelRequest: MemoizedSelector<
   object,
   boolean
-> = createSelector(selectUploadFileFeatureState, getCancelRequest);
+> = createSelector(
+  selectUploadFileFeatureState,
+  getCancelRequest
+);
 ```
 
 ### Update the Feature Module

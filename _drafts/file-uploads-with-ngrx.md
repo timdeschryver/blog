@@ -155,7 +155,7 @@ Create a new file underneath the `upload-file-store` folder, named `state.ts`. T
 export interface State {
   completed: boolean;
   isLoading: boolean;
-  error: any | null;
+  error: string | null;
   progress: number | null;
   cancel: boolean;
 }
@@ -210,7 +210,7 @@ export class UploadRequestAction implements Action {
 
 export class UploadFailureAction implements Action {
   readonly type = ActionTypes.UPLOAD_FAILURE;
-  constructor(public payload: { error: any }) {}
+  constructor(public payload: { error: string }) {}
 }
 
 export class UploadSuccessAction implements Action {
@@ -435,22 +435,23 @@ private handleProgress(event: HttpEvent<any>) {
 
 > For more information on handling `HttpClient` errors, check out the [official docs guide from here](https://angular.io/guide/http#getting-error-details).
 
-This method will be responsible for handling any errors that may be throw from the `HttpClient` during requests.
+This method will be responsible for handling any errors that may be throw from the `HttpClient` during requests. I am making use of a neat library named npm `serialize-error` to give me a predictable `error.message` no matter what type of error is thrown.
+
+Install the library as so:
+
+```shell
+$ npm install serialize-error
+```
 
 ```typescript
-private handleError(error: HttpErrorResponse) {
-  if (error.error instanceof ErrorEvent) {
-    // A client-side or network error occurred. Handle it accordingly.
-    return new fromFeatureActions.UploadFailureAction({
-      error: error.error.message
-    });
-  } else {
-    // The backend returned an unsuccessful response code.
-    // The response body may contain clues as to what went wrong,
-    return new fromFeatureActions.UploadFailureAction({
-      error: error.error
-    });
-  }
+import * as serializeError from 'serialize-error';
+...
+private handleError(error: any) {
+  const friendlyErrorMessage = serializeError(error).message;
+  console.error(friendlyErrorMessage);
+  return new fromFeatureActions.UploadFailureAction({
+    error: friendlyErrorMessage
+  });
 }
 ```
 
@@ -469,6 +470,7 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, concatMap, filter, map, takeUntil } from 'rxjs/operators';
+import * as serializeError from 'serialize-error';
 import { FileUploadService } from 'src/app/_services';
 import * as fromFeatureActions from './actions';
 import * as fromFeatureSelectors from './selectors';
@@ -530,19 +532,12 @@ export class UploadFileEffects {
     }
   }
 
-  private handleError(error: HttpErrorResponse) {
-    if (error.error instanceof ErrorEvent) {
-      // A client-side or network error occurred. Handle it accordingly.
-      return new fromFeatureActions.UploadFailureAction({
-        error: error.error.message
-      });
-    } else {
-      // The backend returned an unsuccessful response code.
-      // The response body may contain clues as to what went wrong,
-      return new fromFeatureActions.UploadFailureAction({
-        error: error.error
-      });
-    }
+  private handleError(error: any) {
+    const friendlyErrorMessage = serializeError(error).message;
+    console.error(friendlyErrorMessage);
+    return new fromFeatureActions.UploadFailureAction({
+      error: friendlyErrorMessage
+    });
   }
 }
 ```
@@ -571,7 +566,7 @@ import {
 } from '@ngrx/store';
 import { State } from './state';
 
-const getError = (state: State): any => state.error;
+const getError = (state: State): string => state.error;
 
 const getIsLoading = (state: State): boolean => state.isLoading;
 
@@ -588,7 +583,7 @@ export const selectUploadFileFeatureState: MemoizedSelector<
 
 export const selectUploadFileError: MemoizedSelector<
   object,
-  any
+  string
 > = createSelector(
   selectUploadFileFeatureState,
   getError

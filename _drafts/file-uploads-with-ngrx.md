@@ -177,7 +177,7 @@ export const initialState: State = {
 };
 ```
 
-### Create Actions
+### Create Feature Actions
 
 > If you would like to learn more about **NgRx Actions**, then check out the [official docs](https://ngrx.io/guide/store/actions).
 
@@ -533,4 +533,68 @@ export class UploadDocumentEffects {
     }
   }
 }
+```
+### Create the Feature Selectors
+
+> If you would like to learn more about **NgRx Selectors**, then check out the [official docs](https://ngrx.io/guide/store/selectors).
+
+Create a new file underneath the `upload-file-store` folder, named `selectors.ts`. This file will hold the selectors we will use to pull specific pieces of state out of the store. These are not necessary, but make for a cleaner interaction with the store from the UI components.
+
+We will create a selector for each significant property of state. This includes the following properties: 
+
+* `state.error`
+* `state.isLoading`
+* `state.completed`
+* `state.progress`
+* `state.cancel`
+
+The completed selectors file will look something like the following: 
+
+```typescript
+import {
+  createFeatureSelector,
+  createSelector,
+  MemoizedSelector
+} from '@ngrx/store';
+import { State } from './state';
+
+export const getError = (state: State): any => state.error;
+
+export const getIsLoading = (state: State): boolean => state.isLoading;
+
+export const getCompleted = (state: State): boolean => state.completed;
+
+export const getProgress = (state: State): number => state.progress;
+
+export const getCancelRequest = (state: State): boolean => state.cancel;
+
+export const selectUploadDocumentFeatureState: MemoizedSelector<
+  object,
+  State
+> = createFeatureSelector<State>('uploadFile');
+
+export const selectUploadDocumentError: MemoizedSelector<
+  object,
+  any
+> = createSelector(selectUploadDocumentFeatureState, getError);
+
+export const selectUploadDocumentIsLoading: MemoizedSelector<
+  object,
+  boolean
+> = createSelector(selectUploadDocumentFeatureState, getIsLoading);
+
+export const selectUploadDocumentCompleted: MemoizedSelector<
+  object,
+  boolean
+> = createSelector(selectUploadDocumentFeatureState, getCompleted);
+
+export const selectUploadDocumentProgress: MemoizedSelector<
+  object,
+  number
+> = createSelector(selectUploadDocumentFeatureState, getProgress);
+
+export const selectUploadDocumentCancelRequest: MemoizedSelector<
+  object,
+  boolean
+> = createSelector(selectUploadDocumentFeatureState, getCancelRequest);
 ```

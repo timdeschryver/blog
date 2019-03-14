@@ -205,7 +205,7 @@ export enum ActionTypes {
 
 export class UploadRequestAction implements Action {
   readonly type = ActionTypes.UPLOAD_REQUEST;
-  constructor(public payload: { files: File }) {}
+  constructor(public payload: { file: File }) {}
 }
 
 export class UploadFailureAction implements Action {
@@ -465,8 +465,8 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { concatMap, filter, map, takeUntil } from 'rxjs/operators';
-import { RootStoreState } from '..';
-import { FileUploadService } from '../../services';
+import { RootStoreState } from '../root-state';
+import { FileUploadService } from 'src/app/_services';
 import * as featureActions from './actions';
 import * as featureSelectors from './selectors';
 

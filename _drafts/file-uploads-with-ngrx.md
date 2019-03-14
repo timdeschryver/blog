@@ -946,6 +946,16 @@ This button will utilize the `*ngIf` to only display if the upload is complete. 
 </div>
 ```
 
+#### Add the Error message
+
+This button will utilize the `*ngIf` to only display if there is an error message on the store.
+
+```html
+<div class="message error" *ngIf="values.error">
+  Error: {{ values.error }}
+</div>
+```
+
 #### Finished Component *.html file
 
 ```html
@@ -973,9 +983,26 @@ This button will utilize the `*ngIf` to only display if the upload is complete. 
     <button (click)="resetUpload()">Upload Another File</button>
   </div>
 
-  <div class="message" *ngIf="values.error">Error: {{ values.error }}</div>
+  <div class="message error" *ngIf="values.error">
+    Error: {{ values.error }}
+  </div>
 </ng-container>
 ```
+
+### Add some styles to our Component *.css file
+
+For formatting let's add a few simple classes to our component stylesheet:
+
+```css
+.message {
+  margin-bottom: 15px;
+}
+
+.error {
+  color: red;
+}
+```
+
 
 ## Add the Component to our AppComponent
 

@@ -732,7 +732,7 @@ We need to wire-up our store into this component for use. Let's start by injecti
 
 ```typescript
 ...
-constructor(private store$: Store<featureState.State>) {}
+constructor(private store$: Store<fromFeatureState.State>) {}
 ```
 
 #### Wire-up our selectors from state
@@ -768,12 +768,18 @@ ngOnInit() {
 Let's add `uploadFile`, `resetUpload`, and `cancelUpload` methods to connect our button clicks to dispatch actions in the store.
 
 ```typescript
-uploadFile(file: File) {
+uploadFile(event: any) {
+  const files: FileList = event.target.files;
+  const file = files.item(0);
+
   this.store$.dispatch(
-    new UploadFileStoreActions.UploadRequestAction({
+    new fromFeatureActions.UploadRequestAction({
       file
     })
   );
+
+  // clear the input form
+  event.srcElement.value = null;
 }
 
 resetUpload() {
@@ -807,15 +813,14 @@ The finished component *.ts file should look similar to the following:
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-
-import * as fromFeatureActions from './upload-file-store/actions';
-import * as fromFeatureSelectors from './upload-file-store/selectors';
-import * as fromFeatureState from './upload-file-store/state';
+import * as fromFeatureActions from 'src/app/upload-file-store/actions';
+import * as fromFeatureSelectors from 'src/app/upload-file-store/selectors';
+import * as fromFeatureState from 'src/app/upload-file-store/state';
 
 @Component({
   selector: 'app-upload-file',
-  styleUrls: ['upload-file.component.css'],
-  templateUrl: './upload-file.component.html'
+  templateUrl: './upload-file.component.html',
+  styleUrls: ['./upload-file.component.css']
 })
 export class UploadFileComponent implements OnInit {
   completed$: Observable<boolean>;
@@ -838,17 +843,17 @@ export class UploadFileComponent implements OnInit {
     );
   }
 
-  uploadFile(file: File) {
+  uploadFile(event: any) {
     const files: FileList = event.target.files;
     const file = files.item(0);
-    
+
     this.store$.dispatch(
       new fromFeatureActions.UploadRequestAction({
         file
       })
     );
 
-    //clear the input form
+    // clear the input form
     event.srcElement.value = null;
   }
 
@@ -956,7 +961,11 @@ This button will utilize the `*ngIf` to only display if the upload is complete. 
 
 ## Add the Component to our AppComponent
 
-For the purposes of this article we will add our new `UploadFileComponent` component to our `AppComponent`
+For the purposes of this article we will add our new `UploadFileComponent` component to our `AppComponent`. The template will look as follows:
+
+```html
+<upload-file></upload-file>
+```
 
 ***
 

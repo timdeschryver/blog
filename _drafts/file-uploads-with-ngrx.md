@@ -137,10 +137,6 @@ export class FileUploadService {
 
 To keep your **NgRx** store organized, I recommend creating a separate Upload File Feature Store. Let's bundle it all together in a module named `upload-file-store.module.ts` and keep it under a sub-directory named `upload-file-store`.
 
-When we are finished building out the store, the folder will look as follows:
-
-! TODO INSERT FOLDER STRUCTURE HERE
-
 ### Create Feature Store Module
 
 Create a feature store module using the following command: 

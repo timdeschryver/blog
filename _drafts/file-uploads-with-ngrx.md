@@ -613,9 +613,14 @@ This will be the fun part!
 Let's start by creating a brand-new `Component`. This component will consist of the following elements:
 
 * An `input` element for the user to interact with to upload a file
-* 
+* A progress bar to connected to the `UploadFileStoreSelectors.selectUploadFileProgress` selector for real-time progress
+* A cancel button to dispatch the `UploadFileStoreActions.UploadCancelRequest()` action
+* A upload button to dispatch the `UploadFileStoreActions.UploadRequest()` action
+* A reset button to dispatch the `UploadFileStoreActions.UploadResetRequest()` action and allow for a new file upload
 
-## Generate the component
+> SIDE NOTE: This would be a good scenario to create a connected container with a dumb component, but for the brevity of this article I will show these combined as one. In the example repository, I will show both scenarios.
+
+### Generate the component
 
 > [Click here](https://angular.io/cli) for more details on using the powerful Angular CLI
 
@@ -623,4 +628,182 @@ Let's start by creating a brand-new `Component`. This component will consist of 
 $ ng g component upload-file
 ```
 
+> In this example we are using the `Angular Material` library because it has a nice built-in progress bar. Feel free to use whichever UI library you would like, or roll your own.
 
+### Update the component *.ts file
+
+#### Inject the Store
+We need to wire-up our store into this component for use. Let's start by injecting the store into the `constructor`. The finished `constructor` should look something like this:
+
+```typescript
+...
+constructor(private store$: Store<RootStoreState.State>) {}
+```
+
+#### Wire-up our selectors from state
+
+Let's create three (3) public fields on the component. A good practice is to place `$` as a suffix so that you know these are `Observable` and must be subscribed to in the template.
+
+```typescript
+completed$: Observable<boolean>;
+isLoading$: Observable<boolean>;
+progress$: Observable<number>;
+```
+
+Let's hook these up to the store in our `ngOnInit` life-cycle hook.
+
+```typescript
+ngOnInit() {
+  this.isLoading$ = this.store$.select(
+    UploadFileStoreSelectors.selectUploadFileIsLoading
+  );
+
+  this.completed$ = this.store$.select(
+    UploadFileStoreSelectors.selectUploadFileCompleted
+  );
+
+  this.progress$ = this.store$.select(
+    UploadFileStoreSelectors.selectUploadFileProgress
+  );
+}
+```
+
+Let's add `uploadFile`, `resetUpload`, and `cancelUpload` methods to connect our button clicks to dispatch actions in the store.
+
+```typescript
+uploadFile(file: File) {
+  this.store$.dispatch(
+    new UploadFileStoreActions.UploadRequestAction({
+      file
+    })
+  );
+}
+
+resetUpload() {
+  this.store$.dispatch(new UploadFileStoreActions.UploadResetAction());
+}
+
+cancelUpload() {
+  this.store$.dispatch(new UploadFileStoreActions.UploadCancelAction());
+}
+```
+
+Let's add some additional methods to help with our html template:
+
+```typescript
+isUploadInProgress(progress: number) {
+  return progress > 0 && progress < 100;
+}
+
+isUploadWaitingToComplete(progress: number, completed: boolean) {
+  return progress === 100 && !completed;
+}
+```
+
+The finished component *.ts file should look similar to the following:
+
+```typescript
+import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+
+import { RootStoreState, UploadFileStoreActions, UploadFileStoreSelectors } from '../../root-store';
+
+@Component({
+  selector: 'app-upload-file',
+  styleUrls: ['upload-file.component.css'],
+  templateUrl: './upload-file.component.html'
+})
+export class UploadFileComponent implements OnInit {
+  completed$: Observable<boolean>;
+  isLoading$: Observable<boolean>;
+  progress$: Observable<number>;
+
+  constructor(private store$: Store<RootStoreState.State>) {}
+
+  ngOnInit() {
+    this.isLoading$ = this.store$.select(
+      UploadFileStoreSelectors.selectUploadFileIsLoading
+    );
+
+    this.completed$ = this.store$.select(
+      UploadFileStoreSelectors.selectUploadFileCompleted
+    );
+
+    this.progress$ = this.store$.select(
+      UploadFileStoreSelectors.selectUploadFileProgress
+    );
+  }
+
+  uploadFile(file: File) {
+    const files: FileList = event.target.files;
+    const file = files.item(0);
+    
+    this.store$.dispatch(
+      new UploadFileStoreActions.UploadRequestAction({
+        file
+      })
+    );
+
+    //clear the input form
+    event.srcElement.value = null;
+  }
+
+  resetUpload() {
+    this.store$.dispatch(new UploadFileStoreActions.UploadResetAction());
+  }
+
+  cancelUpload() {
+    this.store$.dispatch(new UploadFileStoreActions.UploadCancelAction());
+  }
+
+  isUploadInProgress(progress: number) {
+    return progress > 0 && progress < 100;
+  }
+
+  isUploadWaitingToComplete(progress: number, completed: boolean) {
+    return progress === 100 && !completed;
+  }
+}
+```
+
+### Update the component *.html template
+
+We are going to add five (5) major parts to our upload file component. These were an input, progress bar, and three (3) buttons.
+
+#### Add the input field
+
+```html
+<div class="message" *ngIf="!isUploadInProgress(progress) && !isUploadWaitingToComplete(progress, completed) && !completed">
+  <input #file type="file" multiple (change)="uploadFile($event)" />
+</div>
+```
+
+```html
+<div class="message" *ngIf="isUploadWaitingToComplete(progress, completed)">
+  <div style="margin-bottom: 14px;">Uploading... {{progress}}%</div>
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</div>
+```
+
+```html
+<div class="message" *ngIf="isUploadInProgress(progress)">
+  <div style="margin-bottom: 14px;">Uploading... {{progress}}%</div>
+  <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
+</div>
+```
+
+```html
+<div class="message" *ngIf="isUploadInProgress(progress) || isUploadWaitingToComplete(progress, completed)">
+  <button mat-raised-button (click)="cancelUpload()">Cancel Upload</button>
+</div>
+```
+
+```html
+<div class="message" *ngIf="completed">
+  <h4>
+    File has been uploaded successfully!
+  </h4>
+  <button mat-raised-button (click)="resetUpload()">Upload Another File</button>
+</div>
+```

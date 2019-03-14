@@ -88,7 +88,7 @@ public uploadFile(file: File): Observable<HttpEvent<{}>> {
 
   const req = new HttpRequest(
     'POST',
-    `${this.API_BASE_URL}api/file`,
+    `${this.API_BASE_URL}/api/file`,
     formData,
     options
   );
@@ -124,7 +124,7 @@ export class FileUploadService {
 
     const req = new HttpRequest(
       'POST',
-      `${this.API_BASE_URL}api/file`,
+      `${this.API_BASE_URL}/api/file`,
       formData,
       options
     );

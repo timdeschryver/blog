@@ -343,7 +343,7 @@ Let's add the necessary dependencies to our `constructor` as follows:
 constructor(
     private fileUploadService: FileUploadService,
     private actions$: Actions,
-    private store$: Store<RootStoreState.State>
+    private store$: Store<fromFeatureState.State>
   ) {}
 ```
 
@@ -377,7 +377,7 @@ uploadRequestEffect$: Observable<Action> = this.actions$.pipe(
     this.fileUploadService.uploadFile(action.payload.file).pipe(
       takeUntil(
         this.store$
-          .select(featureSelectors.selectUploadDocumentCancelRequest)
+          .select(featureSelectors.selectUploadFileCancelRequest)
           .pipe(
             filter(
               cancel =>
@@ -465,29 +465,29 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { concatMap, filter, map, takeUntil } from 'rxjs/operators';
-import { RootStoreState } from '../root-state';
 import { FileUploadService } from 'src/app/_services';
-import * as featureActions from './actions';
-import * as featureSelectors from './selectors';
+import * as fromFeatureActions from './actions';
+import * as fromFeatureSelectors from './selectors';
+import * as fromFeatureState from './state';
 
 @Injectable()
-export class UploadDocumentEffects {
+export class UploadFileEffects {
   constructor(
     private fileUploadService: FileUploadService,
     private actions$: Actions,
-    private store$: Store<RootStoreState.State>
+    private store$: Store<fromFeatureState.State>
   ) {}
 
   @Effect()
   uploadRequestEffect$: Observable<Action> = this.actions$.pipe(
-    ofType<featureActions.UploadRequestAction>(
-      featureActions.ActionTypes.UPLOAD_REQUEST
+    ofType<fromFeatureActions.UploadRequestAction>(
+      fromFeatureActions.ActionTypes.UPLOAD_REQUEST
     ),
     concatMap(action =>
       this.fileUploadService.uploadFile(action.payload.file).pipe(
         takeUntil(
           this.store$
-            .select(featureSelectors.selectUploadDocumentCancelRequest)
+            .select(fromFeatureSelectors.selectUploadFileCancelRequest)
             .pipe(
               filter(
                 cancel =>
@@ -503,24 +503,24 @@ export class UploadDocumentEffects {
   private onUploadProgress(event: HttpEvent<any>) {
     switch (event.type) {
       case HttpEventType.Sent: {
-        return new featureActions.UploadProgressAction({ progress: 0 });
+        return new fromFeatureActions.UploadProgressAction({ progress: 0 });
       }
       case HttpEventType.UploadProgress: {
-        return new featureActions.UploadProgressAction({
+        return new fromFeatureActions.UploadProgressAction({
           progress: Math.round((100 * event.loaded) / event.total)
         });
       }
       case HttpEventType.Response: {
         if (event.status === 200) {
-          return new featureActions.UploadSuccessAction();
+          return new fromFeatureActions.UploadSuccessAction();
         } else {
-          return new featureActions.UploadFailureAction({
+          return new fromFeatureActions.UploadFailureAction({
             error: event.statusText
           });
         }
       }
       default: {
-        return new featureActions.UploadProgressAction({ progress: 0 });
+        return new fromFeatureActions.UploadProgressAction({ progress: 0 });
       }
     }
   }
@@ -561,35 +561,35 @@ export const getProgress = (state: State): number => state.progress;
 
 export const getCancelRequest = (state: State): boolean => state.cancel;
 
-export const selectUploadDocumentFeatureState: MemoizedSelector<
+export const selectUploadFileFeatureState: MemoizedSelector<
   object,
   State
 > = createFeatureSelector<State>('uploadFile');
 
-export const selectUploadDocumentError: MemoizedSelector<
+export const selectUploadFileError: MemoizedSelector<
   object,
   any
-> = createSelector(selectUploadDocumentFeatureState, getError);
+> = createSelector(selectUploadFileFeatureState, getError);
 
-export const selectUploadDocumentIsLoading: MemoizedSelector<
+export const selectUploadFileIsLoading: MemoizedSelector<
   object,
   boolean
-> = createSelector(selectUploadDocumentFeatureState, getIsLoading);
+> = createSelector(selectUploadFileFeatureState, getIsLoading);
 
-export const selectUploadDocumentCompleted: MemoizedSelector<
+export const selectUploadFileCompleted: MemoizedSelector<
   object,
   boolean
-> = createSelector(selectUploadDocumentFeatureState, getCompleted);
+> = createSelector(selectUploadFileFeatureState, getCompleted);
 
-export const selectUploadDocumentProgress: MemoizedSelector<
+export const selectUploadFileProgress: MemoizedSelector<
   object,
   number
-> = createSelector(selectUploadDocumentFeatureState, getProgress);
+> = createSelector(selectUploadFileFeatureState, getProgress);
 
-export const selectUploadDocumentCancelRequest: MemoizedSelector<
+export const selectUploadFileCancelRequest: MemoizedSelector<
   object,
   boolean
-> = createSelector(selectUploadDocumentFeatureState, getCancelRequest);
+> = createSelector(selectUploadFileFeatureState, getCancelRequest);
 ```
 
 ***
@@ -633,7 +633,7 @@ We need to wire-up our store into this component for use. Let's start by injecti
 
 ```typescript
 ...
-constructor(private store$: Store<RootStoreState.State>) {}
+constructor(private store$: Store<featureState.State>) {}
 ```
 
 #### Wire-up our selectors from state
@@ -709,7 +709,9 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
-import { RootStoreState, UploadFileStoreActions, UploadFileStoreSelectors } from '../../root-store';
+import * as fromFeatureActions from './upload-file-store/actions';
+import * as fromFeatureSelectors from './upload-file-store/selectors';
+import * as fromFeatureState from './upload-file-store/state';
 
 @Component({
   selector: 'app-upload-file',
@@ -721,19 +723,19 @@ export class UploadFileComponent implements OnInit {
   isLoading$: Observable<boolean>;
   progress$: Observable<number>;
 
-  constructor(private store$: Store<RootStoreState.State>) {}
+  constructor(private store$: Store<fromFeatureState.State>) {}
 
   ngOnInit() {
     this.isLoading$ = this.store$.select(
-      UploadFileStoreSelectors.selectUploadFileIsLoading
+      fromFeatureSelectors.selectUploadFileIsLoading
     );
 
     this.completed$ = this.store$.select(
-      UploadFileStoreSelectors.selectUploadFileCompleted
+      fromFeatureSelectors.selectUploadFileCompleted
     );
 
     this.progress$ = this.store$.select(
-      UploadFileStoreSelectors.selectUploadFileProgress
+      fromFeatureSelectors.selectUploadFileProgress
     );
   }
 
@@ -742,7 +744,7 @@ export class UploadFileComponent implements OnInit {
     const file = files.item(0);
     
     this.store$.dispatch(
-      new UploadFileStoreActions.UploadRequestAction({
+      new fromFeatureActions.UploadRequestAction({
         file
       })
     );
@@ -752,11 +754,11 @@ export class UploadFileComponent implements OnInit {
   }
 
   resetUpload() {
-    this.store$.dispatch(new UploadFileStoreActions.UploadResetAction());
+    this.store$.dispatch(new fromFeatureActions.UploadResetAction());
   }
 
   cancelUpload() {
-    this.store$.dispatch(new UploadFileStoreActions.UploadCancelAction());
+    this.store$.dispatch(new fromFeatureActions.UploadCancelAction());
   }
 
   isUploadInProgress(progress: number) {

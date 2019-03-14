@@ -668,6 +668,8 @@ ngOnInit() {
 }
 ```
 
+#### Wire-up our action dispatchers
+
 Let's add `uploadFile`, `resetUpload`, and `cancelUpload` methods to connect our button clicks to dispatch actions in the store.
 
 ```typescript
@@ -688,6 +690,8 @@ cancelUpload() {
 }
 ```
 
+#### Create some html view helper methods
+
 Let's add some additional methods to help with our html template:
 
 ```typescript
@@ -699,6 +703,8 @@ isUploadWaitingToComplete(progress: number, completed: boolean) {
   return progress === 100 && !completed;
 }
 ```
+
+#### Finished Component *.ts file
 
 The finished component *.ts file should look similar to the following:
 
@@ -769,15 +775,21 @@ export class UploadFileComponent implements OnInit {
 
 ### Update the component *.html template
 
-We are going to add five (5) major parts to our upload file component. These were an input, progress bar, and three (3) buttons.
+We are going to add five (5) major parts to our upload file component.
 
 #### Add the input field
+
+There is no upload file button, rather we will make use of the built-in input component and hook to the `change` event. Any time a file is added to the form this event will fire. We also only want to display this form if we are accepting new files to be uploaded. We will use the `*ngIf` structural directive to help here.
 
 ```html
 <div class="message" *ngIf="!isUploadInProgress(progress) && !isUploadWaitingToComplete(progress, completed) && !completed">
   <input #file type="file" multiple (change)="uploadFile($event)" />
 </div>
 ```
+
+#### Add the indeterminate progress bar
+
+This progress bar will be displayed when the progress is 100%, but we still haven't actually received back the `200` from the `HttpClient`. We will use `*ngIf` to only display if it's in this state. Also notice the `mode` of the progress bar is `indeterminate`.
 
 ```html
 <div class="message" *ngIf="isUploadWaitingToComplete(progress, completed)">
@@ -786,6 +798,10 @@ We are going to add five (5) major parts to our upload file component. These wer
 </div>
 ```
 
+#### Add the determinate progress bar
+
+This progress bar will be displayed when the progress is between 0% and 100%. We will use `*ngIf` to only display if it's in this state. We will set the `value` of the progress bar to the actual `progress` from the selector.
+
 ```html
 <div class="message" *ngIf="isUploadInProgress(progress)">
   <div style="margin-bottom: 14px;">Uploading... {{progress}}%</div>
@@ -793,11 +809,19 @@ We are going to add five (5) major parts to our upload file component. These wer
 </div>
 ```
 
+#### Add the Cancel Upload button
+
+This button will utilize the `*ngIf` to only display if the upload is in progress, or waiting to complete. The click event will trigger the dispatch of the `UploadCancelAction`.
+
 ```html
 <div class="message" *ngIf="isUploadInProgress(progress) || isUploadWaitingToComplete(progress, completed)">
   <button mat-raised-button (click)="cancelUpload()">Cancel Upload</button>
 </div>
 ```
+
+#### Add the Reset Upload button
+
+This button will utilize the `*ngIf` to only display if the upload is complete. The click event will trigger the dispatch of the `UploadResetAction`.
 
 ```html
 <div class="message" *ngIf="completed">
@@ -807,3 +831,76 @@ We are going to add five (5) major parts to our upload file component. These wer
   <button mat-raised-button (click)="resetUpload()">Upload Another File</button>
 </div>
 ```
+
+#### Finished Component *.html file
+
+```html
+<div class="message" *ngIf="!isUploadInProgress(progress) && !isUploadWaitingToComplete(progress, completed) && !completed">
+  <input #file type="file" multiple (change)="uploadFile($event)" />
+</div>
+
+<div class="message" *ngIf="isUploadWaitingToComplete(progress, completed)">
+  <div style="margin-bottom: 14px;">Uploading... {{progress}}%</div>
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</div>
+
+<div class="message" *ngIf="isUploadInProgress(progress)">
+  <div style="margin-bottom: 14px;">Uploading... {{progress}}%</div>
+  <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
+</div>
+
+<div class="message" *ngIf="isUploadInProgress(progress) || isUploadWaitingToComplete(progress, completed)">
+  <button mat-raised-button (click)="cancelUpload()">Cancel Upload</button>
+</div>
+
+<div class="message" *ngIf="completed">
+  <h4>
+    File has been uploaded successfully!
+  </h4>
+  <button mat-raised-button (click)="resetUpload()">Upload Another File</button>
+</div>
+```
+
+***
+
+## (Bonus Feature) Back-end REST Endpoint
+
+For those of you brave souls that have made it this far... You might be asking what the backend `API` endpoint looks like. Well, here's an example `ASP.NET Core` `Controller` `Action` offered free of charge ;-)
+
+```csharp
+[HttpPost("[action]")]
+public async Task<IActionResult> UploadFile(List<IFormFile> files)
+{
+    var file = files[0];
+
+    try
+    {
+        await _dataService.WorkWithFileAsync(file);
+        return Ok();
+    }
+    catch (Exception ex)
+    {
+        return BadRequest($"Unable to work with file {file.FileName}. Exception Details: {ex.GetBaseException()?.Message}");
+    }
+}
+```
+
+## GitHub Example Repository
+
+I always like to provide working code examples that follow the article. You can find this articles companion application at the following repository:
+
+
+
+
+## Conclusion
+
+It's important to remember that I have implemented these best practices in several "real world" applications. While I have found these best practices helpful, and maintainable, I do not believe they are an end-all be-all solution to your NgRx projects; it's just what has worked for me. I am curious as to what you all think? Please feel free to offer any suggestions, tips, or best practices you've learned when building enterprise Angular applications with NgRx and I will update the article to reflect as such. Happy Coding!
+
+---
+
+## Additional Resources
+
+I would highly recommend enrolling in the Ultimate Angular courses, especially the NgRx course. It is well worth the money and I have used it as a training tool for new Angular developers. Follow the link below to signup.
+
+[Ultimate Courses: Expert online courses in JavaScript, Angular, NGRX and TypeScript](https://bit.ly/2WubqhW)
+

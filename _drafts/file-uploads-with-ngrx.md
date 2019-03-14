@@ -602,7 +602,9 @@ export const selectUploadDocumentCancelRequest: MemoizedSelector<
 
 Up to this point we have created a new `FileUploadService` that calls our backend `API` to upload a `File` object. We have also created a new `UploadFileStore` feature store that provides `Actions`, a `Reducer`, `Effects`, and `Selectors` to manage the file upload process.
 
-Now that we have the foundation laid out for us we can turn our attention to the user interface and wire-up a new component to the `UploadFileStore` that we created to manage our process. This will be the fun part!
+Now that we have the foundation laid out for us we can turn our attention to the user interface and wire-up a new component to the `UploadFileStore` that we created to manage our process. 
+
+This will be the fun part!
 
 ***
 

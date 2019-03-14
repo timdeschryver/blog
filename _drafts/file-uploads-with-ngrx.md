@@ -708,7 +708,7 @@ This will be the fun part!
 Let's start by creating a brand-new `Component`. This component will consist of the following elements:
 
 * An `input` element for the user to interact with to upload a file
-* A progress bar to connected to the `UploadFileStoreSelectors.selectUploadFileProgress` selector for real-time progress
+* A progress percentage to connected to the `UploadFileStoreSelectors.selectUploadFileProgress` selector for real-time progress
 * A cancel button to dispatch the `UploadFileStoreActions.UploadCancelRequest()` action
 * A upload button to dispatch the `UploadFileStoreActions.UploadRequest()` action
 * A reset button to dispatch the `UploadFileStoreActions.UploadResetRequest()` action and allow for a new file upload
@@ -723,7 +723,7 @@ Let's start by creating a brand-new `Component`. This component will consist of 
 $ ng g component upload-file
 ```
 
-> In this example we are using the `Angular Material` library because it has a nice built-in progress bar. Feel free to use whichever UI library you would like, or roll your own.
+> For simplicity of this article we will just display the progress percentage, this could easily be adapted to hook into the `value` property of a progress bar control, like the Angular Material library provides.
 
 ### Update the component *.ts file
 
@@ -884,25 +884,23 @@ There is no upload file button, rather we will make use of the built-in input co
 </div>
 ```
 
-#### Add the indeterminate progress bar
+#### Add the indeterminate progress message
 
-This progress bar will be displayed when the progress is 100%, but we still haven't actually received back the `200` from the `HttpClient`. We will use `*ngIf` to only display if it's in this state. Also notice the `mode` of the progress bar is `indeterminate`.
+This message will be displayed when the progress is 100%, but we still haven't actually received back the `200` from the `HttpClient`. We will use `*ngIf` to only display if it's in this state.
 
 ```html
 <div class="message" *ngIf="isUploadWaitingToComplete(progress, completed)">
-  <div style="margin-bottom: 14px;">Uploading... {{progress}}%</div>
-  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  <div style="margin-bottom: 14px;">Uploading... Almost Complete...</div>
 </div>
 ```
 
-#### Add the determinate progress bar
+#### Add the determinate progress message
 
-This progress bar will be displayed when the progress is between 0% and 100%. We will use `*ngIf` to only display if it's in this state. We will set the `value` of the progress bar to the actual `progress` from the selector.
+This message will be displayed when the progress is between 0% and 100%. We will use `*ngIf` to only display if it's in this state. We will set the `value` of the progress message to the actual `progress` from the selector.
 
 ```html
 <div class="message" *ngIf="isUploadInProgress(progress)">
   <div style="margin-bottom: 14px;">Uploading... {{progress}}%</div>
-  <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
 </div>
 ```
 
@@ -912,7 +910,7 @@ This button will utilize the `*ngIf` to only display if the upload is in progres
 
 ```html
 <div class="message" *ngIf="isUploadInProgress(progress) || isUploadWaitingToComplete(progress, completed)">
-  <button mat-raised-button (click)="cancelUpload()">Cancel Upload</button>
+  <button (click)="cancelUpload()">Cancel Upload</button>
 </div>
 ```
 
@@ -925,7 +923,7 @@ This button will utilize the `*ngIf` to only display if the upload is complete. 
   <h4>
     File has been uploaded successfully!
   </h4>
-  <button mat-raised-button (click)="resetUpload()">Upload Another File</button>
+  <button (click)="resetUpload()">Upload Another File</button>
 </div>
 ```
 
@@ -937,26 +935,28 @@ This button will utilize the `*ngIf` to only display if the upload is complete. 
 </div>
 
 <div class="message" *ngIf="isUploadWaitingToComplete(progress, completed)">
-  <div style="margin-bottom: 14px;">Uploading... {{progress}}%</div>
-  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  <div style="margin-bottom: 14px;">Uploading... Almost Complete...</div>
 </div>
 
 <div class="message" *ngIf="isUploadInProgress(progress)">
   <div style="margin-bottom: 14px;">Uploading... {{progress}}%</div>
-  <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
 </div>
 
 <div class="message" *ngIf="isUploadInProgress(progress) || isUploadWaitingToComplete(progress, completed)">
-  <button mat-raised-button (click)="cancelUpload()">Cancel Upload</button>
+  <button (click)="cancelUpload()">Cancel Upload</button>
 </div>
 
 <div class="message" *ngIf="completed">
   <h4>
     File has been uploaded successfully!
   </h4>
-  <button mat-raised-button (click)="resetUpload()">Upload Another File</button>
+  <button (click)="resetUpload()">Upload Another File</button>
 </div>
 ```
+
+## Add the Component to our AppComponent
+
+For the purposes of this article we will add our new `UploadFileComponent` component to our `AppComponent`
 
 ***
 

@@ -30,7 +30,7 @@ For context, this article assumes you are using the following `npm` `package.jso
 
 ## A Brief Primer On NgOnDestroy
 
-Before we dig too deep, let's take a few minutes and review `NgOnDestroy`. 
+Before we dig too deep, let's take a few minutes and review `ngOnDestroy`. 
 
 NgOnDestroy is a lifecycle method that can be added by implementing `OnDestroy` on the class and adding a new class method named `ngOnDestroy`. It's primary purpose according to the [Angular Docs](https://angular.io/guide/lifecycle-hooks#lifecycle-sequence) is to "Cleanup just before Angular destroys the directive/component. Unsubscribe Observables and detach event handlers to avoid memory leaks. Called just before Angular destroys the directive/component."
 
@@ -102,15 +102,15 @@ export class MyValueComponent implements OnInit, OnDestroy {
 
 ### Moving Beyond Memory Leaks
 
-Great! Now you have some background on `NgOnDestroy` and how cleaning up memory leaks is the primary use case for this lifecycle method. But what if you want to take it a step further and add additional cleanup logic? How about making server-side cleanup calls? Maybe preventing user navigation away?
+Great! Now you have some background on `ngOnDestroy` and how cleaning up memory leaks is the primary use case for this lifecycle method. But what if you want to take it a step further and add additional cleanup logic? How about making server-side cleanup calls? Maybe preventing user navigation away?
 
-As you read on we will discuss three methods to upgrade to upgrade your `NgOnDestroy` for optimum use.
+As you read on we will discuss three methods to upgrade your `ngOnDestroy` for optimum use.
 
 ---
 
 ## Upgrade #1 - Making NgOnDestroy Async
 
-As with other lifecycle methods in Angular, you can modify `ngOnDestroy` with `async`. This will allow you make calls to methods returning a `Promise`. This can be a powerful way to manage cleanup activities in your application. As you read on we will explore an example of this.
+As with other lifecycle methods in Angular, you can modify `ngOnDestroy` with `async`. This will allow you to make calls to methods returning a `Promise`. This can be a powerful way to manage cleanup activities in your application. As you read on we will explore an example of this.
 
 ### Adding logic to call AuthService.logout from ngOnDestroy
 
@@ -214,7 +214,7 @@ Now our `ngOnDestroy` method is called both when the component is destroyed by A
 
 ### More about HostListener
 
-`@HostListener()` is an Angular decorator that can be placed on top of any class method. This decorator takes two arguments: `eventName` and optionally `args`. In the above example we are passing `window:beforeunload` as the DOM event. This means that Angular will automatically call our method when the DOM event `window:beforeunload` is fired. For more information on `@HostListener` check out the [official docs](https://angular.io/api/core/HostListener).
+`@HostListener()` is an Angular decorator that can be placed on top of any class method. This decorator takes two arguments: `eventName` and optionally `args`. In the above example, we are passing `window:beforeunload` as the DOM event. This means that Angular will automatically call our method when the DOM event `window:beforeunload` is fired. For more information on `@HostListener` check out the [official docs](https://angular.io/api/core/HostListener).
 
 If you want to use this to prevent navigation away from a page or component then:
 
@@ -246,7 +246,7 @@ async ngOnDestroy($event) {
 
 A couple points to be aware of:
 
-* This event is currently supported in in all major browsers EXCEPT iOS Safari.
+* This event is currently supported in all major browsers EXCEPT iOS Safari.
 
 * If you need this functionality in iOS Safari then consider reviewing this [Stack Overflow thread](https://stackoverflow.com/questions/14645011/window-onbeforeunload-and-window-onunload-is-not-working-in-firefox-safari-o/14647730#14647730).
 

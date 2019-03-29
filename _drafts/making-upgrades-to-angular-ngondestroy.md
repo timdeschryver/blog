@@ -1,8 +1,6 @@
 # Making Upgrades to Angular's NgOnDestroy
 
-This article is a continuation of an Angular Hot Tip tweet that I sent out earlier this week. It became widely popular and generated quite a discussion. The concepts explored in this article reflect that discussion, so you should probably take some time and go check it out here: 
-
-<blockquote class="twitter-tweet"><p lang="en" dir="ltr">📣🌟Angular Hot Tip<br><br>Counting on ngOnDestroy to always fire? You may be surprised to learn that it doesn&#39;t fire on page refresh or navigation away from your application.<br><br>How do we fix that? Decorate with HostListener(&quot;window:beforeunload&quot;)<a href="https://twitter.com/hashtag/javascript?src=hash&amp;ref_src=twsrc%5Etfw">#javascript</a> <a href="https://twitter.com/angular?ref_src=twsrc%5Etfw">@angular</a> <a href="https://t.co/pJvhYFIj8T">pic.twitter.com/pJvhYFIj8T</a></p>&mdash; Wes (@wesgrimes) <a href="https://twitter.com/wesgrimes/status/1110603853089701888?ref_src=twsrc%5Etfw">March 26, 2019</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+This article is a continuation of an Angular Hot Tip tweet that I sent out earlier this week. It became widely popular and generated quite a discussion. The concepts explored in this article reflect that discussion, so you should probably take some time and go check it out here: [Angular Hot Tip Tweet](https://twitter.com/wesgrimes/status/1110603853089701888)
 
 As an extension of the above mentioned tweet, we will discuss limitations with how and when `ngOnDestroy` is called. We will also discuss ways to overcome those limitations. If you are new to Angular, or new to lifecycle methods in Angular, then I suggest you check out the [official docs here](https://angular.io/guide/lifecycle-hooks). 
 

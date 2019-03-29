@@ -19,6 +19,7 @@ plugins:
   - jekyll-gist
   - jekyll-time-to-read
   - jekyll-sitemap
+  - jekyll-twitter-plugin
 
 minima:
   social_links:

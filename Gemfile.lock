@@ -41,6 +41,7 @@ GEM
       jekyll (~> 3.3)
     jekyll-time-to-read (0.1.2)
       jekyll
+    jekyll-twitter-plugin (2.0.0)
     jekyll-watch (2.1.2)
       listen (~> 3.0)
     kramdown (1.17.0)
@@ -89,6 +90,7 @@ DEPENDENCIES
   jekyll-gist
   jekyll-sitemap
   jekyll-time-to-read
+  jekyll-twitter-plugin
   minima (~> 2.0)
   tzinfo-data
   wdm (~> 0.1.0)

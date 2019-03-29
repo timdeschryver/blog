@@ -236,9 +236,6 @@ A couple points to be aware of:
 
 * If you are using this event in an attempt to block navigation away you must set the `event.returnValue` to a string of the message you would like to display. More details in this [example](https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event#Examples).
 
-## Closing Comments
-
- has been brought to my attention that this may dilute the meaning of the ngOnDestroy lifecycle method. If you feel as such, another option would be to create a separate “onBeforeWindowUnload” method that is decorated with HostListener. The choice is yours... 🤩
 
 ## Conclusion
 

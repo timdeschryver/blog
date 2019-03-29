@@ -202,7 +202,7 @@ Now our `ngOnDestroy` method is called both when the component is destroyed by A
 
 If you want to use this to prevent navigation away from a page or component then:
 
-* Add `$event` to the `#HostListener` arguments
+* Add `$event` to the `@HostListener` arguments
 * Call `event.preventDefault()`
 * Set `event.returnValue` to a string value of the message you would like the browser to display
 

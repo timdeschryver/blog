@@ -244,6 +244,7 @@ This article is a continuation of an Angular Hot Tip tweet that I sent out earli
 I realize that some of the tips recommended in this article are not mainstream and may generate some concern. Please remember as always to try these out and see if they fit for what you are doing in your application. If they work great! If not, then it's ok to move on. 
 
 If you have any comments or questions feel free to contact me on [Twitter](https://twitter.com/wesgrimes)
+
 ---
 
 ## Additional Resources

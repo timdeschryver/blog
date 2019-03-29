@@ -10,6 +10,8 @@ excerpt: We will discuss limitations with how and when `ngOnDestroy` is called. 
 header-img: 'assets/post_headers/ngondestroy.jpg'
 ---
 
+![](/assets/post_headers/ngondestroy.jpg)
+
 This article is a continuation of an Angular Hot Tip tweet that I sent out earlier this week. It became widely popular and generated quite a discussion. The concepts explored in this article reflect that discussion, so you should probably take some time and go check it out here:
 
 {% twitter https://twitter.com/wesgrimes/status/1110603853089701888 %}
